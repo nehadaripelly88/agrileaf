@@ -1,0 +1,14 @@
+[
+  {
+    "id": "9aa409b0",
+    "timestamp": "2026-02-24T06:46:09.877141",
+    "date": "24 Feb 2026",
+    "time": "06:46 AM",
+    "disease": "Early Blight",
+    "crop": "Tomato",
+    "severity": "mild",
+    "confidence": 38.4,
+    "is_healthy": false,
+    "model_used": "Color Analysis (train model for real AI)"
+  }
+]

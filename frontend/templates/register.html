@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriLeaf — Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--green:#1a3d2b;--leaf:#2d6a4f;--mint:#52b788;--cream:#f5f0e8;--text:#1a1a1a;--muted:#6b7280;--border:#e5e7eb}
+    body{font-family:'Geist',sans-serif;background:var(--cream);min-height:100vh;display:flex;flex-direction:column}
+
+    /* NAV */
+    .nav{height:64px;display:flex;align-items:center;padding:0 40px;justify-content:space-between;background:var(--cream)}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .bl{width:36px;height:36px;background:var(--green);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .bn{font-size:16px;font-weight:700;color:var(--text)}
+    .bt{font-size:9px;font-weight:700;color:var(--mint);background:rgba(82,183,136,.12);border:1px solid rgba(82,183,136,.25);padding:2px 7px;border-radius:4px}
+    .nav-signin{background:#fff;color:var(--text);font-size:13px;font-weight:600;padding:8px 20px;border-radius:9px;border:1.5px solid var(--border);text-decoration:none;transition:all .2s}
+    .nav-signin:hover{border-color:var(--leaf);color:var(--leaf)}
+
+    /* LAYOUT */
+    .page{display:flex;flex:1;min-height:calc(100vh - 64px)}
+
+    /* LEFT */
+    .left{flex:1;padding:60px 64px;display:flex;flex-direction:column;justify-content:center}
+    .eyebrow{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--leaf);margin-bottom:32px}
+    .eyebrow::before{content:'';width:28px;height:2px;background:var(--leaf)}
+    h1{font-family:'Instrument Serif',serif;font-size:clamp(52px,6vw,80px);font-weight:400;line-height:1.05;letter-spacing:-2px;color:var(--text);margin-bottom:24px}
+    h1 em{font-style:italic;color:var(--leaf)}
+    .tagline{font-size:16px;color:var(--muted);line-height:1.7;max-width:480px;margin-bottom:48px}
+    .feat-list{display:flex;flex-direction:column;gap:20px}
+    .feat{display:flex;align-items:flex-start;gap:16px}
+    .feat-ico{width:44px;height:44px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .feat-text strong{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+    .feat-text span{font-size:13px;color:var(--muted)}
+
+    /* RIGHT */
+    .right{width:480px;background:#fff;display:flex;flex-direction:column;justify-content:center;padding:48px 44px;box-shadow:-4px 0 32px rgba(0,0,0,.06);position:relative}
+    .right::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--mint),#f59e0b)}
+    .form-eyebrow{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mint);margin-bottom:10px}
+    .form-title{font-family:'Instrument Serif',serif;font-size:36px;color:var(--text);line-height:1.1;margin-bottom:6px}
+    .form-title em{font-style:italic;color:var(--leaf)}
+    .form-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+
+    .flash-list{list-style:none;margin-bottom:16px}
+    .flash-item{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:8px}
+    .flash-item.error{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+    .flash-item.success{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
+
+    .field-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text);display:block;margin-bottom:8px}
+    .field-label.opt{color:var(--muted)}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+    .field{margin-bottom:14px}
+    .inp-wrap{position:relative}
+    .inp-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#c4c9d1;font-size:13px}
+    input{width:100%;padding:12px 14px 12px 40px;border:1.5px solid #eaecf0;border-radius:10px;font-family:inherit;font-size:14px;color:var(--text);background:#f9fafb;outline:none;transition:all .2s}
+    input:focus{border-color:var(--leaf);background:#fff;box-shadow:0 0 0 3px rgba(45,106,79,.08)}
+    input::placeholder{color:#b0b7c3}
+
+    .section-divider{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mint);padding:14px 0 10px;border-top:1.5px solid #f3f4f6;margin-top:4px}
+
+    .btn{width:100%;padding:14px;background:var(--green);color:#fff;border:none;border-radius:11px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:9px;margin-top:8px}
+    .btn:hover{background:#0f2318;transform:translateY(-1px);box-shadow:0 8px 24px rgba(26,61,43,.25)}
+    .signin-row{text-align:center;font-size:13px;color:var(--muted);margin-top:18px}
+    .signin-row a{color:var(--leaf);font-weight:600;text-decoration:none}
+
+    @media(max-width:900px){
+      .left{display:none}
+      .right{width:100%;box-shadow:none;padding:40px 28px}
+      .page{justify-content:center}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="brand">
+    <div class="bl">🌿</div>
+    <span class="bn">AgriLeaf</span>
+    <span class="bt">AI</span>
+  </a>
+  <a href="/login" class="nav-signin">Sign in</a>
+</nav>
+
+<div class="page">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="eyebrow">Join AgriLeaf</div>
+    <h1>Your crops.<br><em>Protected</em><br>by AI.</h1>
+    <p class="tagline">Join farmers across India using AgriLeaf to detect diseases early, get treatment advice, and protect their yield — completely free.</p>
+    <div class="feat-list">
+      <div class="feat">
+        <div class="feat-ico">🔬</div>
+        <div class="feat-text">
+          <strong>Instant Disease Detection</strong>
+          <span>89% accurate across 40+ diseases on all major Indian crops</span>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-ico">💊</div>
+        <div class="feat-text">
+          <strong>Treatment Plans</strong>
+          <span>Chemical and organic options with dosage and spray timing</span>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="feat-ico">🗣️</div>
+        <div class="feat-text">
+          <strong>Your Language</strong>
+          <span>Telugu, Hindi, Tamil and English fully supported</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="form-eyebrow">New Farmer</div>
+    <div class="form-title">Create your<br><em>account.</em></div>
+    <div class="form-sub">Free forever · Takes 30 seconds</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-list">
+          {% for category, message in messages %}
+            <li class="flash-item {{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/register">
+      <div class="field">
+        <label class="field-label">Full Name</label>
+        <div class="inp-wrap">
+          <i class="fas fa-user"></i>
+          <input type="text" name="full_name" placeholder="e.g. Ramesh Kumar">
+        </div>
+      </div>
+
+      <div class="row2">
+        <div>
+          <label class="field-label">Username</label>
+          <div class="inp-wrap">
+            <i class="fas fa-at"></i>
+            <input type="text" name="username" placeholder="ramesh01" required minlength="3">
+          </div>
+        </div>
+        <div>
+          <label class="field-label">Password</label>
+          <div class="inp-wrap">
+            <i class="fas fa-lock"></i>
+            <input type="password" name="password" placeholder="Min 6 chars" required minlength="6">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider">Farm Details (Optional)</div>
+
+      <div class="field">
+        <label class="field-label opt">Village / District</label>
+        <div class="inp-wrap">
+          <i class="fas fa-map-marker-alt"></i>
+          <input type="text" name="village" placeholder="e.g. Warangal, Telangana">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label opt">Main Crops</label>
+        <div class="inp-wrap">
+          <i class="fas fa-seedling"></i>
+          <input type="text" name="crop_types" placeholder="e.g. Rice, Cotton, Tomato">
+        </div>
+      </div>
+
+      <button type="submit" class="btn"><i class="fas fa-user-plus"></i> Create Account</button>
+    </form>
+
+    <div class="signin-row">Already have an account? <a href="/login">Sign in here</a></div>
+  </div>
+</div>
+
+</body>
+</html>

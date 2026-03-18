@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriLeaf — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(253,246,238,.97);backdrop-filter:blur(12px);border-bottom:1.5px solid #e0d5c8;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;gap:14px}
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/dashboard" class="brand">
+      <span class="brand-leaf">🌿</span>
+      <span class="brand-name">AgriLeaf</span>
+      <span class="brand-tag">AI</span>
+    </a>
+    <span class="nav-user-name" style="margin-right:auto"><i class="fas fa-user-circle"></i> {{ user.username }}</span>
+    <a href="/" class="nav-btn nav-btn-green"><i class="fas fa-camera"></i> Scan Leaf</a>
+    <a href="/logout" class="nav-btn nav-btn-out"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+</nav>
+
+<div class="dash-page">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul class="flash-list">
+        {% for category, message in messages %}
+          <li class="flash-item {{ category }}"><i class="fas fa-info-circle"></i> {{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <div class="welcome-card">
+    <div class="welcome-icon">👨‍🌾</div>
+    <div>
+      <div class="welcome-name">{{ user.username }}</div>
+      <div class="welcome-sub">
+        
+        
+      </div>
+      <div class="welcome-meta">@{{ user.username }}</div>
+    </div>
+    <a href="/" class="welcome-btn"><i class="fas fa-camera"></i> Scan New Leaf</a>
+  </div>
+
+  <div class="dash-stats">
+    <div class="dstat">
+      <div class="dstat-icon" style="background:#f0fdf4">📊</div>
+      <div><div class="dstat-num">{{ stats.total }}</div><div class="dstat-label">Total Scans</div></div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-icon" style="background:#dcfce7">✅</div>
+      <div><div class="dstat-num g">{{ stats.healthy }}</div><div class="dstat-label">Healthy</div></div>
+    </div>
+    <div class="dstat">
+      <div class="dstat-icon" style="background:#fee2e2">🔴</div>
+      <div><div class="dstat-num r">{{ stats.diseased }}</div><div class="dstat-label">Diseased</div></div>
+    </div>
+  </div>
+
+  <div class="sec-hdr">
+    <h2><i class="fas fa-history" style="color:var(--green)"></i> Scan History</h2>
+    {% if history %}
+    <button class="btn-danger" onclick="clearHistory()"><i class="fas fa-trash"></i> Clear All</button>
+    {% endif %}
+  </div>
+
+  {% if history %}
+  <div class="htable">
+    <div class="hthead">
+      <span>Disease</span><span>Crop</span><span>Severity</span><span>Confidence</span><span>Date</span>
+    </div>
+    {% for item in history %}
+    <div class="htrow">
+      <div>
+        <div class="ht-disease">{% if item.is_healthy %}✅{% else %}🔴{% endif %} {{ item.disease }}</div>
+      </div>
+      <div style="font-size:13px;color:#374151">{{ item.crop }}</div>
+      <div><span class="severity-chip {{ item.severity }}">{{ item.severity | capitalize }}</span></div>
+      <div class="ht-conf">{{ item.confidence }}%</div>
+      <div class="ht-date">{{ item.date }}<br><small>{{ item.time }}</small></div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <div class="ei">🔬</div>
+    <h3>No scans yet</h3>
+    <p>Start by scanning a leaf photo to detect diseases.</p>
+    <a href="/" class="btn-primary-sm" style="margin:0 auto"><i class="fas fa-camera"></i> Scan First Leaf</a>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+async function clearHistory() {
+  if (!confirm('Clear all history? This cannot be undone.')) return;
+  const res = await fetch('/history/clear', { method: 'DELETE' });
+  const d = await res.json();
+  if (d.success) location.reload();
+  else alert('Failed to clear.');
+}
+</script>
+</body>
+</html>

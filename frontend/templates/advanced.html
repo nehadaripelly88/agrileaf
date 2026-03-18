@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriLeaf - Advanced Features</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--g:#1a3d2b;--l:#2d6a4f;--m:#52b788;--c:#f8f4ef;--b:#e5e7eb;--t:#1a1a1a;--mu:#6b7280}
+    body{font-family:'Geist',sans-serif;background:#f9fafb;color:var(--t)}
+    .nav{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(255,255,255,.97);border-bottom:1px solid var(--b);display:flex;align-items:center;padding:0 32px;gap:10px;z-index:100}
+    .brand{display:flex;align-items:center;gap:9px;text-decoration:none;margin-right:auto}
+    .bl{width:34px;height:34px;background:var(--g);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+    .bn{font-size:16px;font-weight:700;color:var(--t)}
+    .bt{font-size:9px;font-weight:700;color:var(--m);background:rgba(82,183,136,.12);border:1px solid rgba(82,183,136,.25);padding:2px 7px;border-radius:4px}
+    .nl{font-size:13px;font-weight:500;color:var(--mu);text-decoration:none;padding:6px 12px;border-radius:7px}
+    .nl:hover,.nl.act{color:var(--l);background:#f0fdf4;font-weight:700}
+    .nu{font-size:13px;font-weight:600;color:var(--g);background:#f0fdf4;border:1px solid #bbf7d0;padding:5px 12px;border-radius:100px}
+    .nb{font-size:13px;font-weight:600;padding:7px 16px;border-radius:8px;text-decoration:none;color:var(--mu);border:1.5px solid var(--b)}
+    .page{max-width:1100px;margin:0 auto;padding:84px 28px 60px}
+    .eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:8px}
+    h1{font-size:40px;font-weight:700;color:var(--g);margin-bottom:8px}
+    h1 em{font-style:italic;color:var(--l);font-weight:400}
+    .sub{font-size:15px;color:var(--mu);margin-bottom:28px}
+    .tabs{display:flex;gap:6px;margin-bottom:28px;background:#fff;padding:5px;border-radius:14px;border:1.5px solid var(--b);width:fit-content;flex-wrap:wrap}
+    .tab{padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;font-family:inherit;color:var(--mu)}
+    .tab:hover{background:#f3f4f6;color:var(--t)}
+    .tab.on{background:var(--g);color:#fff}
+    .panel{display:none}
+    .panel.on{display:block}
+    .card{background:#fff;border:1.5px solid var(--b);border-radius:16px;padding:24px;margin-bottom:16px}
+    .ct{font-size:15px;font-weight:700;color:var(--t);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .ct i{color:var(--l)}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .field{margin-bottom:12px}
+    .field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);margin-bottom:5px}
+    .field select,.field input{width:100%;padding:10px 13px;border:1.5px solid var(--b);border-radius:9px;font-family:inherit;font-size:14px;outline:none;background:#f9fafb}
+    .field select:focus,.field input:focus{border-color:var(--l);background:#fff}
+    .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .btn{background:var(--g);color:#fff;border:none;padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px}
+    .btn:hover{background:#0f2318}
+    .res{margin-top:14px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:16px;display:none}
+    .res.on{display:block}
+    .rrow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:14px}
+    .rrow:last-child{border:none}
+    .rrow strong{font-size:16px;font-weight:800;color:var(--g)}
+    .ib{border-radius:10px;padding:12px 14px;margin-bottom:10px}
+    .ib.gr{background:#f0fdf4;border-left:3px solid var(--l)}
+    .ib.yw{background:#fffbeb;border-left:3px solid #f59e0b}
+    .ib-t{font-size:12px;font-weight:700;color:var(--t);margin-bottom:5px}
+    .ib p{font-size:12px;color:var(--mu);line-height:1.7}
+    .chat-wrap{border:1.5px solid var(--b);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;height:500px}
+    .chat-hd{background:var(--g);padding:14px 18px;display:flex;align-items:center;gap:12px}
+    .chat-av{width:36px;height:36px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px}
+    .chat-hn{font-size:14px;font-weight:700;color:#fff}
+    .chat-hs{font-size:11px;color:rgba(255,255,255,.7)}
+    .online{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.8)}
+    .dot{width:7px;height:7px;border-radius:50%;background:#4ade80}
+    .msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#f9fafb}
+    .msg{max-width:78%}
+    .msg.bot{align-self:flex-start}
+    .msg.usr{align-self:flex-end}
+    .bub{padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.6}
+    .bot .bub{background:#fff;border:1px solid var(--b);color:var(--t);border-bottom-left-radius:3px}
+    .usr .bub{background:var(--g);color:#fff;border-bottom-right-radius:3px}
+    .mt{font-size:10px;color:var(--mu);margin-top:3px;padding:0 3px}
+    .usr .mt{text-align:right}
+    .typing{display:none;align-self:flex-start;padding:10px 14px;background:#fff;border:1px solid var(--b);border-radius:14px}
+    .td{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--mu);margin:0 2px;animation:tb 1.2s infinite}
+    .td:nth-child(2){animation-delay:.2s}
+    .td:nth-child(3){animation-delay:.4s}
+    @keyframes tb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+    .qqs{padding:8px 14px;background:#fff;border-top:1px solid var(--b);display:flex;gap:6px;flex-wrap:wrap}
+    .qq{font-size:12px;font-weight:500;padding:5px 11px;background:#f9fafb;border:1px solid var(--b);border-radius:100px;cursor:pointer;color:var(--t)}
+    .qq:hover{border-color:var(--l);color:var(--l)}
+    .inp-bar{padding:10px 14px;background:#fff;border-top:1px solid var(--b);display:flex;gap:8px;align-items:center}
+    .inp{flex:1;padding:9px 14px;border:1.5px solid var(--b);border-radius:100px;font-family:inherit;font-size:14px;outline:none;background:#f9fafb}
+    .inp:focus{border-color:var(--l);background:#fff}
+    .send{width:38px;height:38px;background:var(--g);border:none;border-radius:50%;cursor:pointer;color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .send:hover{background:#0f2318}
+    .tl-wrap{display:flex;gap:3px}
+    .wk{flex:1;border-radius:7px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
+    .wk:hover{transform:translateY(-3px)}
+    .we{font-size:13px}
+    .wl{font-size:8px;color:rgba(255,255,255,.9);text-align:center;line-height:1.2;margin-top:1px}
+    .wk.sow{background:#16a34a}
+    .wk.water{background:#3b82f6}
+    .wk.fert{background:#d97706}
+    .wk.spray{background:#ea580c}
+    .wk.mon{background:#a855f7}
+    .wk.harv{background:#f59e0b}
+    .wk.rest{background:#9ca3af}
+    .wk.cur{outline:3px solid var(--g);transform:translateY(-4px)}
+    .wnum{display:flex;gap:3px;margin-bottom:5px}
+    .wn{flex:1;text-align:center;font-size:9px;font-weight:700;color:var(--mu)}
+    .tleg{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--b)}
+    .li{display:flex;align-items:center;gap:5px;font-size:12px}
+    .ld{width:11px;height:11px;border-radius:3px}
+    .tip{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:14px 18px;margin-top:14px;display:none}
+    .tip.on{display:block}
+    .tip-t{font-size:14px;font-weight:700;color:var(--g);margin-bottom:5px}
+    .tip-b{font-size:13px;color:var(--t);line-height:1.7}
+    .mf{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+    .ms{padding:8px 13px;border:1.5px solid var(--b);border-radius:9px;font-size:13px;font-family:inherit;outline:none;background:#fff;cursor:pointer}
+    .ms:focus{border-color:var(--l)}
+    .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+    .dc{border-radius:11px;padding:12px;cursor:pointer;border:2px solid transparent;transition:transform .15s}
+    .dc:hover{transform:scale(1.03)}
+    .dc.high{background:#fee2e2;border-color:#fca5a5}
+    .dc.medium{background:#fef9c3;border-color:#fde68a}
+    .dc.low{background:#dcfce7;border-color:#86efac}
+    .dc.none{background:#f3f4f6;border-color:#e5e7eb}
+    .dn{font-size:12px;font-weight:700;color:var(--t);margin-bottom:2px}
+    .dd{font-size:10px;color:var(--mu);line-height:1.4}
+    .dr{font-size:10px;font-weight:700;margin-top:3px}
+    .high .dr{color:#dc2626}.medium .dr{color:#d97706}.low .dr{color:#16a34a}.none .dr{color:var(--mu)}
+    .mleg{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--b)}
+    .oi{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border:1.5px solid var(--b);border-radius:11px;margin-bottom:8px}
+    .oe{font-size:26px;flex-shrink:0}
+    .od{font-size:13px;font-weight:700;color:var(--t);margin-bottom:2px}
+    .om{font-size:11px;color:var(--mu)}
+    .obg{margin-left:auto;flex-shrink:0}
+    .bg{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px}
+    .bgr{background:#fee2e2;color:#991b1b}
+    .bgy{background:#fef9c3;color:#854d0e}
+    .yr{background:linear-gradient(135deg,var(--g),#0f2318);border-radius:16px;padding:26px;color:#fff;margin-top:16px;display:none}
+    .yr.on{display:block}
+    .yn{font-size:60px;font-weight:700;line-height:1;letter-spacing:-2px;margin-bottom:2px}
+    .yu{font-size:15px;opacity:.7;margin-bottom:16px}
+    .yb{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+    .ybi{background:rgba(255,255,255,.12);border-radius:10px;padding:12px;text-align:center}
+    .ybn{font-size:20px;font-weight:800;color:#fff}
+    .ybl{font-size:10px;opacity:.65;margin-top:2px}
+    .ytips{margin-top:16px;background:rgba(255,255,255,.08);border-radius:10px;padding:14px}
+    .ytit{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.6;margin-bottom:8px}
+    .yti{font-size:12px;opacity:.8;margin-bottom:5px}
+    .rb{width:100%;height:7px;background:rgba(255,255,255,.2);border-radius:4px;margin-top:8px;overflow:hidden}
+    .rf{height:100%;background:#4ade80;border-radius:4px;transition:width .6s}
+    .rl{display:flex;justify-content:space-between;font-size:10px;opacity:.6;margin-top:3px}
+    .disc{font-size:11px;color:var(--mu);background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 13px;margin-top:12px;line-height:1.6}
+    @media(max-width:768px){.two,.r2{grid-template-columns:1fr}.page{padding:80px 14px 40px}.tabs{flex-wrap:wrap}.yb{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="brand">
+    <div class="bl">&#127807;</div>
+    <span class="bn">AgriLeaf</span>
+    <span class="bt">AI</span>
+  </a>
+  <a href="/" class="nl">Scan Leaf</a>
+  <a href="/tools" class="nl">Farm Tools</a>
+  <a href="/advanced" class="nl act">AI Features</a>
+  <a href="/dashboard" class="nl">Dashboard</a>
+  <span class="nu" style="margin-left:auto" id="username-display">{{ full_name }}</span>
+  <a href="/logout" class="nb">Logout</a>
+</nav>
+
+<div class="page">
+  <p class="eyebrow">Advanced AI Features</p>
+  <h1>Features no other <em>farm app has.</em></h1>
+  <p class="sub">AI Chatbot &middot; Crop Timeline &middot; Disease Outbreak Map &middot; Yield Prediction</p>
+
+  <div class="tabs">
+    <button class="tab on" id="t1" onclick="show('chatbot','t1')">AI Farm Assistant</button>
+    <button class="tab" id="t2" onclick="show('timeline','t2')">Crop Timeline</button>
+    <button class="tab" id="t3" onclick="show('map','t3')">Disease Map</button>
+    <button class="tab" id="t4" onclick="show('yield','t4')">Yield Prediction</button>
+  </div>
+
+  <!-- CHATBOT -->
+  <div class="panel on" id="chatbot">
+    <p style="font-size:12px;color:var(--mu);background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 13px;margin-bottom:14px">Ask in English, Telugu or Hindi</p>
+    <div class="two">
+      <div class="chat-wrap">
+        <div class="chat-hd">
+          <div class="chat-av">&#127807;</div>
+          <div>
+            <div class="chat-hn">AgriLeaf Farm Assistant</div>
+            <div class="chat-hs">Disease &middot; Treatment &middot; Tips</div>
+          </div>
+          <div class="online"><div class="dot"></div> Online</div>
+        </div>
+        <div class="msgs" id="msgs">
+          <div class="msg bot"><div class="bub">Namaskaram! I am your AgriLeaf Farm Assistant. Ask me anything about crop diseases, treatment, or farming tips - in English, Telugu, or Hindi!</div><div class="mt">Just now</div></div>
+        </div>
+        <div class="typing" id="typing"><span class="td"></span><span class="td"></span><span class="td"></span></div>
+        <div class="qqs">
+          <div class="qq" onclick="qsend(this)">Tomato yellow leaves</div>
+          <div class="qq" onclick="qsend(this)">Rice blast treatment</div>
+          <div class="qq" onclick="qsend(this)">Best spray time</div>
+          <div class="qq" onclick="qsend(this)">Cotton leaf curl</div>
+        </div>
+        <div class="inp-bar">
+          <input class="inp" id="cinp" placeholder="Ask about your crop...">
+          <button class="send" id="sbtn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ct"><i class="fas fa-lightbulb"></i> What You Can Ask</div>
+        <div class="ib gr"><div class="ib-t">Disease Questions</div><p>"My cotton leaves have white powder"<br>"Rice blast symptoms and cure"<br>"Late blight in tomato treatment"</p></div>
+        <div class="ib yw"><div class="ib-t">Treatment Questions</div><p>"Which fungicide for rice blast?"<br>"Organic remedy for aphids"<br>"When to apply Mancozeb?"</p></div>
+        <div class="ib gr"><div class="ib-t">In Telugu or Hindi</div><p>"vari tegulu mandu edi?"<br>"naa panta aakulu padipotunayi"<br>"meri fasal mein keede lag gaye"</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="panel" id="timeline">
+    <div class="card" style="margin-bottom:14px">
+      <div class="ct"><i class="fas fa-seedling"></i> Select Crop</div>
+      <div class="r2">
+        <div class="field"><label>Crop</label>
+          <select id="tlc" onchange="renderTL()">
+            <option value="rice">Rice (Kharif)</option>
+            <option value="wheat">Wheat (Rabi)</option>
+            <option value="cotton">Cotton (Kharif)</option>
+            <option value="tomato">Tomato</option>
+            <option value="potato">Potato (Rabi)</option>
+          </select>
+        </div>
+        <div class="field"><label>Current Week</label>
+          <select id="tlw" onchange="renderTL()">
+            <option value="1">Week 1</option><option value="2">Week 2</option>
+            <option value="3">Week 3</option><option value="4">Week 4</option>
+            <option value="5">Week 5</option><option value="6">Week 6</option>
+            <option value="7">Week 7</option><option value="8">Week 8</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct"><i class="fas fa-calendar-week"></i> 16-Week Crop Calendar (click any week)</div>
+      <div class="wnum" id="wnums"></div>
+      <div class="tl-wrap" id="tlwrap"></div>
+      <div class="tleg">
+        <div class="li"><div class="ld" style="background:#16a34a"></div>Sow</div>
+        <div class="li"><div class="ld" style="background:#3b82f6"></div>Water</div>
+        <div class="li"><div class="ld" style="background:#d97706"></div>Fertilize</div>
+        <div class="li"><div class="ld" style="background:#ea580c"></div>Spray</div>
+        <div class="li"><div class="ld" style="background:#a855f7"></div>Monitor</div>
+        <div class="li"><div class="ld" style="background:#f59e0b"></div>Harvest</div>
+      </div>
+    </div>
+    <div class="tip" id="wtip"><div class="tip-t" id="wtit"></div><div class="tip-b" id="wtxt"></div></div>
+  </div>
+
+  <!-- MAP -->
+  <div class="panel" id="map">
+    <div class="card">
+      <div class="ct"><i class="fas fa-map-marker-alt"></i> Disease Outbreak Map - Telangana and AP</div>
+      <div class="mf">
+        <select class="ms" id="mst" onchange="renderMap()">
+          <option value="all">All States</option>
+          <option value="tg">Telangana</option>
+          <option value="ap">Andhra Pradesh</option>
+        </select>
+        <select class="ms" id="mcr" onchange="renderMap()">
+          <option value="all">All Crops</option>
+          <option value="rice">Rice</option>
+          <option value="cotton">Cotton</option>
+          <option value="tomato">Tomato</option>
+          <option value="chilli">Chilli</option>
+        </select>
+      </div>
+      <div class="dgrid" id="dgrid"></div>
+      <div class="mleg">
+        <div class="li"><div class="ld" style="background:#fee2e2;border:1px solid #fca5a5"></div>High Risk</div>
+        <div class="li"><div class="ld" style="background:#fef9c3;border:1px solid #fde68a"></div>Medium Risk</div>
+        <div class="li"><div class="ld" style="background:#dcfce7;border:1px solid #86efac"></div>Low Risk</div>
+        <div class="li"><div class="ld" style="background:#f3f4f6;border:1px solid #e5e7eb"></div>Clear</div>
+      </div>
+    </div>
+    <div class="card"><div class="ct"><i class="fas fa-exclamation-triangle"></i> Active Alerts</div><div id="alerts"></div></div>
+  </div>
+
+  <!-- YIELD -->
+  <div class="panel" id="yield">
+    <div class="two">
+      <div class="card">
+        <div class="ct"><i class="fas fa-chart-bar"></i> Predict Your Harvest</div>
+        <p style="font-size:13px;color:var(--mu);margin-bottom:16px">Enter your field details for an AI-based yield estimate.</p>
+        <div class="r2">
+          <div class="field"><label>Crop</label>
+            <select id="yc"><option value="rice">Rice</option><option value="wheat">Wheat</option><option value="cotton">Cotton</option><option value="tomato">Tomato</option><option value="potato">Potato</option><option value="maize">Maize</option></select>
+          </div>
+          <div class="field"><label>Land Area (Acres)</label><input type="number" id="ya" placeholder="e.g. 3" min="0.1" step="0.1"></div>
+        </div>
+        <div class="r2">
+          <div class="field"><label>Variety</label>
+            <select id="yv"><option value="hq">High Yield (HYV)</option><option value="local">Local/Traditional</option><option value="hybrid">Hybrid</option></select>
+          </div>
+          <div class="field"><label>Irrigation</label>
+            <select id="yi"><option value="full">Fully Irrigated</option><option value="partial">Partial/Rainfed</option><option value="rain">Rainfed Only</option></select>
+          </div>
+        </div>
+        <div class="r2">
+          <div class="field"><label>Soil Health</label>
+            <select id="ys"><option value="good">Good / Dark Soil</option><option value="medium">Medium / Mixed</option><option value="poor">Poor / Sandy</option></select>
+          </div>
+          <div class="field"><label>Disease Status</label>
+            <select id="yd"><option value="none">No Disease</option><option value="mild">Mild (10-20%)</option><option value="moderate">Moderate (30-50%)</option><option value="severe">Severe (50%+)</option></select>
+          </div>
+        </div>
+        <div class="field"><label>Fertilizer Used</label>
+          <select id="yf"><option value="full">Full Recommended Dose</option><option value="half">Half Dose</option><option value="none">No Fertilizer</option></select>
+        </div>
+        <button class="btn" id="ybtn"><i class="fas fa-calculator"></i> Predict Yield</button>
+        <div id="yres"></div>
+      </div>
+      <div class="card">
+        <div class="ct"><i class="fas fa-info-circle"></i> About This Prediction</div>
+        <p style="font-size:13px;color:var(--mu);line-height:1.7;margin-bottom:12px">Based on ICAR standard yield tables, adjusted for irrigation, soil, disease impact, and fertilizer use.</p>
+        <div class="disc"><b>Note:</b> Actual yield may vary 15-20%. Consult your KVK for precision estimates.<br><br>Kisan Call Centre: 1800-180-1551 (Free, Telugu and Hindi)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// TAB SWITCHING
+function show(panelId, tabId) {
+  var panels = document.querySelectorAll('.panel');
+  for (var i = 0; i < panels.length; i++) panels[i].classList.remove('on');
+  var tabs = document.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('on');
+  document.getElementById(panelId).classList.add('on');
+  document.getElementById(tabId).classList.add('on');
+}
+
+// CHATBOT
+var answers = {
+  'yellow': 'Yellow leaves on tomato can be due to:\n- Early Blight: brown spots with yellow ring, spray Mancozeb 2.5g/L\n- Nitrogen deficiency: overall yellowing from bottom, apply Urea 1% spray\n- Waterlogging: improve drainage\n\nCheck if yellowing starts from older or newer leaves.',
+  'blast': 'Rice Blast treatment:\n\nSymptoms: Diamond-shaped grey spots on leaves\nTreatment:\n- Tricyclazole 0.06% spray at tillering stage\n- Carbendazim 1g/L if severe\n- Do not apply excess nitrogen\n\nSpray in early morning before 9 AM.',
+  'late blight': 'Late Blight on Tomato or Potato:\n\nSymptoms: Dark water-soaked patches, spreads very fast\n\nTreatment:\n- Metalaxyl + Mancozeb 2.5g/L\n- Remove affected plants immediately\n- Avoid overhead watering\n- Spray every 7-10 days',
+  'spray': 'Best times to spray pesticides:\n\nBEST: 6 to 9 AM early morning\nGOOD: 4 to 6 PM evening\nAVOID: 10 AM to 3 PM (heat causes evaporation)\nNEVER: During or after rain',
+  'aphid': 'Aphid control:\n\nChemical: Imidacloprid 0.5ml/L or Thiamethoxam 0.3g/L\nOrganic: Neem oil 5ml/L plus liquid soap 2ml/L, spray weekly\nBiological: Ladybird beetles eat aphids naturally\n\nTreat within 2-3 days of first sighting!',
+  'curl': 'Cotton Leaf Curl Virus:\n\nSymptoms: Leaves curl upward, thickened veins, stunted plant\nNo chemical cure once infected.\n\nManagement:\n- Remove and burn infected plants\n- Control whitefly with Imidacloprid 0.5ml/L\n- Use resistant varieties like RCH134',
+  'fertilizer': 'For fertilizer recommendations, use our Fertilizer Calculator in Farm Tools. It calculates exact Urea, DAP and MOP quantities for your crop and area.',
+  'mandi': 'Check today mandi prices in Farm Tools section. We show rates for Telangana and AP districts including Warangal, Guntur, Kurnool and more.',
+  'vari': 'Vari tegulu (Rice Blast) chikitsa:\n\nLakshanalu: Aakula pai vajra akara macchas\nMandu: Tricyclazole 75WP - 0.6 grams per litre neetilo kalapi spray cheyyandi\nKVK number: 1800-180-1551',
+  'panta': 'Namaskaram! Mee panta problem ardham chesukunnanu.\n\nDayachesi vivaragaa cheppandi:\n- Ee panta? (vari, tamato, patti)\n- Aakula pai ee marks kanipistunayi?\n\nAgriLeaf app lo aaku photo scan cheyyandi - vedam rogam gurtistaamu!',
+  'keede': 'Fasal mein keede:\n\nTurant karein: Neem oil 5ml/L ka chhidkaav karein\nAgriLeaf mein patti ki photo daalkar pehchaan karein\nKisan Call Centre: 1800-180-1551'
+};
+
+function getAnswer(q) {
+  var ql = q.toLowerCase();
+  if (ql.indexOf('yellow') !== -1 || ql.indexOf('yellowing') !== -1) return answers['yellow'];
+  if (ql.indexOf('blast') !== -1) return answers['blast'];
+  if (ql.indexOf('late blight') !== -1 || ql.indexOf('blight') !== -1) return answers['late blight'];
+  if (ql.indexOf('spray') !== -1 || ql.indexOf('time') !== -1) return answers['spray'];
+  if (ql.indexOf('aphid') !== -1) return answers['aphid'];
+  if (ql.indexOf('curl') !== -1) return answers['curl'];
+  if (ql.indexOf('fertil') !== -1 || ql.indexOf('urea') !== -1 || ql.indexOf('dap') !== -1) return answers['fertilizer'];
+  if (ql.indexOf('mandi') !== -1 || ql.indexOf('price') !== -1) return answers['mandi'];
+  if (ql.indexOf('recommend') !== -1 || ql.indexOf('next crop') !== -1 || ql.indexOf('which crop') !== -1 || ql.indexOf('crop rotation') !== -1) return 'Crop Rotation Recommendations:\n\nAfter Rice: Grow wheat, mustard or pulses (lentil, chickpea)\nAfter Cotton: Grow sorghum, groundnut or sunflower\nAfter Tomato: Grow maize, onion or leafy vegetables\nAfter Wheat: Grow rice, maize or cotton\nAfter Potato: Grow mustard, onion or garlic\n\nBenefits of rotation:\n- Breaks pest and disease cycles\n- Improves soil nitrogen (legumes)\n- Increases overall yield 15-20%\n\nCall KVK 1800-180-1551 for advice specific to your district.';
+  if (ql.indexOf('water') !== -1 || ql.indexOf('irrigation') !== -1) return 'Irrigation Guide:\n\nRice: Maintain 5cm standing water during tillering, drain before harvest\nWheat: 6 critical irrigation stages - crown root, tillering, jointing, flowering, milking, dough\nCotton: Irrigate every 10-15 days, stop 2 weeks before harvest\nTomato: Drip irrigation best, water daily in summer\nPotato: Irrigate every 7-10 days, stop 2 weeks before harvest\n\nGeneral rule: Water in early morning or evening, never during peak afternoon heat.';
+  if (ql.indexOf('harvest') !== -1 || ql.indexOf('when to harvest') !== -1) return 'Harvest Timing Guide:\n\nRice: Harvest when 80% grains turn golden yellow, 25-30 days after flowering\nWheat: Harvest when grain is hard and straw turns yellow, moisture below 14%\nCotton: Pick bolls when fully open and white, usually 3-4 pickings per season\nTomato: Harvest at breaker stage (first color change) for transport, full red for local market\nPotato: Harvest 10 days after top drying, check skin set before digging';
+  if (ql.indexOf('organic') !== -1 || ql.indexOf('natural') !== -1) return 'Organic Pest Control Methods:\n\nNeem oil 5ml/L - Works against aphids, whitefly, mites\nGarlic spray - Crush 100g garlic in 1L water, spray undiluted\nChilli + soap spray - 50g chilli powder in 1L water + 5ml soap\nTrichogramma cards - Biological control for stem borer and bollworm\nYellow sticky traps - For whitefly and thrips monitoring\nBluestone (Copper Sulphate) 2g/L - Fungal diseases\n\nOrganic methods work best as PREVENTION, not cure.';
+  if (ql.indexOf('disease') !== -1 || ql.indexOf('sick') !== -1 || ql.indexOf('problem') !== -1) return 'Common Crop Disease Signs:\n\nSpots on leaves - Fungal disease (Blight, Blast, Rust)\nYellowing leaves - Nutrient deficiency or viral disease\nWilting despite water - Root rot or wilt disease\nPowdery coating - Powdery mildew (fungal)\nLeaf curling - Viral disease spread by insects\nHoles in leaves - Insect damage\n\nBest action: Take a clear photo of the affected leaf and scan it in AgriLeaf for instant AI diagnosis!';
+
+  if (ql.indexOf('vari') !== -1 || ql.indexOf('tegulu') !== -1) return answers['vari'];
+  if (ql.indexOf('panta') !== -1 || ql.indexOf('nakku') !== -1) return answers['panta'];
+  if (ql.indexOf('keede') !== -1 || ql.indexOf('fasal') !== -1) return answers['keede'];
+  return 'Thank you for your question!\n\n1. Scan your leaf in AgriLeaf scanner for instant disease diagnosis\n2. Call Kisan Call Centre: 1800-180-1551 (free, Telugu and Hindi)\n3. Visit your local KVK for expert advice\n\nCan you describe the symptoms in more detail?';
+}
+
+function addMsg(text, type) {
+  var box = document.getElementById('msgs');
+  var d = document.createElement('div');
+  d.className = 'msg ' + type;
+  var now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  var bub = document.createElement('div');
+  bub.className = 'bub';
+  bub.innerHTML = text.replace(/\n/g, '<br>');
+  var mt = document.createElement('div');
+  mt.className = 'mt';
+  mt.textContent = now;
+  d.appendChild(bub);
+  d.appendChild(mt);
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendMsg() {
+  var inp = document.getElementById('cinp');
+  var q = inp.value.trim();
+  if (!q) return;
+  addMsg(q, 'usr');
+  inp.value = '';
+  var t = document.getElementById('typing');
+  t.style.display = 'flex';
+  document.getElementById('msgs').scrollTop = 99999;
+  setTimeout(function() {
+    t.style.display = 'none';
+    addMsg(getAnswer(q), 'bot');
+  }, 1000);
+}
+
+function qsend(el) {
+  document.getElementById('cinp').value = el.textContent;
+  sendMsg();
+}
+
+document.getElementById('sbtn').addEventListener('click', sendMsg);
+document.getElementById('cinp').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') sendMsg();
+});
+
+// CROP TIMELINE
+var TL = {
+  rice:   [{t:'sow',e:'S',l:'Nursery'},{t:'water',e:'W',l:'Water'},{t:'sow',e:'S',l:'Transplant'},{t:'fert',e:'F',l:'Base NPK'},{t:'water',e:'W',l:'Flood'},{t:'mon',e:'M',l:'Check Blast'},{t:'fert',e:'F',l:'Urea'},{t:'spray',e:'Sp',l:'Fungicide'},{t:'water',e:'W',l:'Irrigate'},{t:'mon',e:'M',l:'Neck Blast'},{t:'fert',e:'F',l:'Potash'},{t:'spray',e:'Sp',l:'Insecticide'},{t:'water',e:'W',l:'Dry Field'},{t:'mon',e:'M',l:'Grain Fill'},{t:'harv',e:'H',l:'Ready'},{t:'harv',e:'H',l:'Harvest'}],
+  wheat:  [{t:'sow',e:'S',l:'Sow'},{t:'water',e:'W',l:'Crown'},{t:'fert',e:'F',l:'DAP Base'},{t:'mon',e:'M',l:'Germinate'},{t:'water',e:'W',l:'Tiller'},{t:'fert',e:'F',l:'Urea Top'},{t:'spray',e:'Sp',l:'Rust Watch'},{t:'water',e:'W',l:'Jointing'},{t:'mon',e:'M',l:'Yellow Rust'},{t:'spray',e:'Sp',l:'Propiconazole'},{t:'water',e:'W',l:'Grain Water'},{t:'fert',e:'F',l:'Foliar'},{t:'mon',e:'M',l:'Grain Fill'},{t:'water',e:'W',l:'Last Water'},{t:'harv',e:'H',l:'Harvest'},{t:'harv',e:'H',l:'Thresh'}],
+  cotton: [{t:'sow',e:'S',l:'Sow'},{t:'water',e:'W',l:'Water'},{t:'fert',e:'F',l:'Base NPK'},{t:'mon',e:'M',l:'Germinate'},{t:'spray',e:'Sp',l:'Weedicide'},{t:'fert',e:'F',l:'Urea 1st'},{t:'mon',e:'M',l:'Jassid'},{t:'spray',e:'Sp',l:'Imidacloprid'},{t:'fert',e:'F',l:'Urea 2nd'},{t:'mon',e:'M',l:'Bollworm'},{t:'spray',e:'Sp',l:'Bollguard'},{t:'water',e:'W',l:'Boll Fill'},{t:'mon',e:'M',l:'Leaf Curl'},{t:'harv',e:'H',l:'1st Pick'},{t:'harv',e:'H',l:'2nd Pick'},{t:'harv',e:'H',l:'Final'}],
+  tomato: [{t:'sow',e:'S',l:'Nursery'},{t:'water',e:'W',l:'Nursery'},{t:'sow',e:'S',l:'Transplant'},{t:'fert',e:'F',l:'Base NPK'},{t:'water',e:'W',l:'Daily'},{t:'spray',e:'Sp',l:'Fungicide'},{t:'fert',e:'F',l:'Urea'},{t:'mon',e:'M',l:'Blight Watch'},{t:'spray',e:'Sp',l:'Mancozeb'},{t:'fert',e:'F',l:'Potash'},{t:'mon',e:'M',l:'Fruit Borer'},{t:'spray',e:'Sp',l:'Insecticide'},{t:'harv',e:'H',l:'1st Harvest'},{t:'harv',e:'H',l:'Pick'},{t:'harv',e:'H',l:'Continue'},{t:'harv',e:'H',l:'Final'}],
+  potato: [{t:'sow',e:'S',l:'Plant'},{t:'water',e:'W',l:'Water'},{t:'fert',e:'F',l:'Base NPK'},{t:'mon',e:'M',l:'Sprouting'},{t:'water',e:'W',l:'Earth Up'},{t:'fert',e:'F',l:'Urea'},{t:'spray',e:'Sp',l:'Blight Spray'},{t:'water',e:'W',l:'Water'},{t:'mon',e:'M',l:'Aphid Watch'},{t:'spray',e:'Sp',l:'Fungicide'},{t:'fert',e:'F',l:'Foliar'},{t:'mon',e:'M',l:'Tubers'},{t:'water',e:'W',l:'Stop Water'},{t:'rest',e:'R',l:'Curing'},{t:'harv',e:'H',l:'Harvest'},{t:'harv',e:'H',l:'Store'}]
+};
+
+var TIPS = {
+  sow: 'Sowing/Transplanting: Ensure soil moisture is good, plant at correct depth and spacing.',
+  water: 'Irrigation: Maintain recommended water level. Avoid waterlogging. Check drainage.',
+  fert: 'Fertilizing: Apply recommended dose when soil is moist. Do not apply in afternoon heat.',
+  spray: 'Spraying: Apply fungicide or insecticide in early morning 6-9 AM. Check wind direction.',
+  mon: 'Monitoring: Inspect 10 plants per row. Check leaves top and bottom for discoloration.',
+  harv: 'Harvest: Check grain or fruit maturity. Harvest in morning hours for best quality.',
+  rest: 'Rest stage: No major activity needed. Prepare equipment for next stage.'
+};
+
+function renderTL() {
+  var crop = document.getElementById('tlc').value;
+  var cur = parseInt(document.getElementById('tlw').value);
+  var data = TL[crop] || TL['rice'];
+  var wn = document.getElementById('wnums');
+  var wrap = document.getElementById('tlwrap');
+  var nums = '';
+  var blocks = '';
+  for (var i = 0; i < 16; i++) {
+    var w = data[i];
+    var isCur = (i + 1) === cur;
+    nums += '<div class="wn" style="color:' + (isCur ? '#2d6a4f' : '#9ca3af') + '">' + (isCur ? 'v' : '') + 'W' + (i+1) + '</div>';
+    var curClass = isCur ? ' cur' : '';
+    blocks += '<div class="wk ' + w.t + curClass + '" onclick="showTip(\'' + w.t + '\',' + (i+1) + ')">';
+    blocks += '<div class="we">' + w.e + '</div>';
+    blocks += '<div class="wl">' + w.l + '</div>';
+    blocks += '</div>';
+  }
+  wn.innerHTML = nums;
+  wrap.innerHTML = blocks;
+}
+
+function showTip(type, week) {
+  document.getElementById('wtit').textContent = 'Week ' + week + ' - What to do';
+  document.getElementById('wtxt').textContent = TIPS[type] || 'Tend to your crop carefully this week.';
+  document.getElementById('wtip').classList.add('on');
+}
+
+renderTL();
+
+// DISEASE MAP
+var DIST = [
+  {n:'Warangal',s:'tg',c:'rice',r:'high',d:'Rice Blast, BLB'},
+  {n:'Karimnagar',s:'tg',c:'rice',r:'high',d:'Leaf Folder, Blast'},
+  {n:'Nizamabad',s:'tg',c:'rice',r:'medium',d:'Sheath Rot'},
+  {n:'Adilabad',s:'tg',c:'cotton',r:'high',d:'Cotton Leaf Curl'},
+  {n:'Khammam',s:'tg',c:'rice',r:'medium',d:'BLB, Stem Borer'},
+  {n:'Nalgonda',s:'tg',c:'tomato',r:'low',d:'Early Blight'},
+  {n:'Sangareddy',s:'tg',c:'cotton',r:'medium',d:'Bollworm, Jassid'},
+  {n:'Hyderabad',s:'tg',c:'tomato',r:'none',d:'No active outbreak'},
+  {n:'Guntur',s:'ap',c:'chilli',r:'high',d:'Leaf Curl, Thrips'},
+  {n:'Krishna',s:'ap',c:'rice',r:'high',d:'Blast, BLB'},
+  {n:'Kurnool',s:'ap',c:'rice',r:'medium',d:'Tikka Disease'},
+  {n:'Nellore',s:'ap',c:'rice',r:'medium',d:'Sheath Blight'},
+  {n:'Prakasam',s:'ap',c:'cotton',r:'high',d:'Leaf Curl Virus'},
+  {n:'Chittoor',s:'ap',c:'tomato',r:'high',d:'Late Blight, TSWV'},
+  {n:'Anantapur',s:'ap',c:'rice',r:'low',d:'Minor Rust risk'},
+  {n:'Visakhapatnam',s:'ap',c:'rice',r:'medium',d:'Yellow Stem Borer'}
+];
+
+function renderMap() {
+  var sf = document.getElementById('mst').value;
+  var cf = document.getElementById('mcr').value;
+  var list = DIST.filter(function(d) {
+    return (sf === 'all' || d.s === sf) && (cf === 'all' || d.c === cf);
+  });
+  var rLabels = {high:'HIGH RISK', medium:'MEDIUM', low:'LOW RISK', none:'CLEAR'};
+  document.getElementById('dgrid').innerHTML = list.map(function(d) {
+    return '<div class="dc ' + d.r + '"><div class="dn">' + d.n + '</div><div class="dd">' + d.d + '</div><div class="dr">' + rLabels[d.r] + '</div></div>';
+  }).join('');
+  var hi = list.filter(function(d) { return d.r === 'high' || d.r === 'medium'; });
+  document.getElementById('alerts').innerHTML = hi.length ? hi.map(function(d) {
+    var cls = d.r === 'high' ? 'bgr' : 'bgy';
+    var txt = d.r === 'high' ? 'Act Now' : 'Monitor';
+    var st = d.s === 'tg' ? 'Telangana' : 'Andhra Pradesh';
+    return '<div class="oi"><div class="oe">' + (d.r === 'high' ? '!' : '?') + '</div><div><div class="od">' + d.d + '</div><div class="om">' + d.n + ' - ' + st + '</div></div><div class="obg"><span class="bg ' + cls + '">' + txt + '</span></div></div>';
+  }).join('') : '<p style="color:var(--mu);text-align:center;padding:16px">No active alerts</p>';
+}
+
+renderMap();
+
+// YIELD PREDICTION
+var YBASE = {
+  rice:{hq:25,local:15,hybrid:30},
+  wheat:{hq:18,local:12,hybrid:22},
+  cotton:{hq:8,local:5,hybrid:10},
+  tomato:{hq:120,local:80,hybrid:150},
+  potato:{hq:80,local:50,hybrid:100},
+  maize:{hq:22,local:14,hybrid:30}
+};
+var MSP = {rice:2183,wheat:2275,cotton:6620,tomato:1800,potato:1200,maize:2090};
+
+function calcYield() {
+  var crop = document.getElementById('yc').value;
+  var area = parseFloat(document.getElementById('ya').value);
+  if (!area || area <= 0) { alert('Enter land area'); return; }
+  var v = document.getElementById('yv').value;
+  var ir = document.getElementById('yi').value;
+  var so = document.getElementById('ys').value;
+  var di = document.getElementById('yd').value;
+  var fe = document.getElementById('yf').value;
+  var base = YBASE[crop][v];
+  var m = 1;
+  if (ir === 'partial') m *= 0.80;
+  if (ir === 'rain') m *= 0.65;
+  if (so === 'medium') m *= 0.85;
+  if (so === 'poor') m *= 0.70;
+  if (di === 'mild') m *= 0.85;
+  if (di === 'moderate') m *= 0.65;
+  if (di === 'severe') m *= 0.45;
+  if (fe === 'half') m *= 0.80;
+  if (fe === 'none') m *= 0.60;
+  var perAcre = Math.round(base * m * 10) / 10;
+  var total = Math.round(perAcre * area * 10) / 10;
+  var rev = Math.round(total * (MSP[crop] || 2000));
+  var pct = Math.round(m * 100);
+  var maxT = Math.round(base * area * 10) / 10;
+  var tips = '';
+  if (di !== 'none') tips += '<div class="yti">Treat the disease immediately - it is reducing your yield significantly</div>';
+  if (fe !== 'full') tips += '<div class="yti">Apply full recommended fertilizer dose to increase yield by 15-25%</div>';
+  if (ir !== 'full') tips += '<div class="yti">Improve irrigation - water stress is reducing your potential</div>';
+  if (so === 'poor') tips += '<div class="yti">Add organic manure to improve soil health</div>';
+  tips += '<div class="yti">Call KVK: 1800-180-1551 for precise field-specific advice</div>';
+  document.getElementById('yres').innerHTML =
+    '<div class="yr on">' +
+    '<p style="font-size:10px;opacity:.6;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">PREDICTED YIELD</p>' +
+    '<div class="yn">' + total + '</div>' +
+    '<div class="yu">quintals total from ' + area + ' acre' + (area > 1 ? 's' : '') + '</div>' +
+    '<div class="rb"><div class="rf" style="width:' + pct + '%"></div></div>' +
+    '<div class="rl"><span>0</span><span>' + pct + '% of max potential</span><span>' + maxT + ' max</span></div>' +
+    '<div class="yb">' +
+    '<div class="ybi"><div class="ybn">' + perAcre + '</div><div class="ybl">Per Acre</div></div>' +
+    '<div class="ybi"><div class="ybn">Rs.' + rev.toLocaleString('en-IN') + '</div><div class="ybl">Est. Revenue</div></div>' +
+    '<div class="ybi"><div class="ybn">' + pct + '%</div><div class="ybl">Efficiency</div></div>' +
+    '</div>' +
+    '<div class="ytips"><div class="ytit">HOW TO IMPROVE</div>' + tips + '</div>' +
+    '</div>';
+}
+
+document.getElementById('ybtn').addEventListener('click', calcYield);
+</script>
+</body>
+</html>

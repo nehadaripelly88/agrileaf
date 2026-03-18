@@ -1,0 +1,62 @@
+[
+  {
+    "id": "a93beeb3",
+    "timestamp": "2026-02-24T06:14:09.592534",
+    "date": "24 Feb 2026",
+    "time": "06:14 AM",
+    "disease": "Early Blight",
+    "crop": "Tomato",
+    "severity": "moderate",
+    "confidence": 45.7,
+    "is_healthy": false,
+    "model_used": "Color Analysis (train model for real AI)"
+  },
+  {
+    "id": "3038d669",
+    "timestamp": "2026-02-24T06:23:01.866214",
+    "date": "24 Feb 2026",
+    "time": "06:23 AM",
+    "disease": "Early Blight",
+    "crop": "Tomato",
+    "severity": "mild",
+    "confidence": 38.4,
+    "is_healthy": false,
+    "model_used": "Color Analysis (train model for real AI)"
+  },
+  {
+    "id": "04d5dd17",
+    "timestamp": "2026-02-24T06:23:21.634782",
+    "date": "24 Feb 2026",
+    "time": "06:23 AM",
+    "disease": "Early Blight",
+    "crop": "Tomato",
+    "severity": "mild",
+    "confidence": 38.4,
+    "is_healthy": false,
+    "model_used": "Color Analysis (train model for real AI)"
+  },
+  {
+    "id": "824f1652",
+    "timestamp": "2026-02-24T06:23:23.437983",
+    "date": "24 Feb 2026",
+    "time": "06:23 AM",
+    "disease": "Early Blight",
+    "crop": "Tomato",
+    "severity": "mild",
+    "confidence": 38.4,
+    "is_healthy": false,
+    "model_used": "Color Analysis (train model for real AI)"
+  },
+  {
+    "id": "41b7e419",
+    "timestamp": "2026-02-24T06:23:43.838634",
+    "date": "24 Feb 2026",
+    "time": "06:23 AM",
+    "disease": "Brown Spot",
+    "crop": "Rice",
+    "severity": "mild",
+    "confidence": 38.4,
+    "is_healthy": false,
+    "model_used": "Color Analysis (train model for real AI)"
+  }
+]

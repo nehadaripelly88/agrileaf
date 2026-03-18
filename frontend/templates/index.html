@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriLeaf – AI Leaf Health Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .nav-user{display:flex;align-items:center;gap:10px}
+        .nav-username{font-size:13px;font-weight:600;color:#16a34a;background:#dcfce7;padding:5px 13px;border-radius:100px;border:1px solid #bbf7d0;white-space:nowrap}
+        .nav-username i{margin-right:5px}
+        .nav-btn{font-size:12px;font-weight:700;padding:6px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:all .15s;border:none;font-family:inherit}
+        .nav-btn-dash{background:#16a34a;color:#fff}
+        .nav-btn-dash:hover{background:#15803d}
+        .nav-btn-out{background:transparent;border:1px solid #e5e7eb;color:#6b7280}
+        .nav-btn-out:hover{border-color:#dc2626;color:#dc2626}
+        .soil-section{border:1.5px solid #e5e7eb;border-radius:12px;margin-bottom:16px;overflow:hidden}
+        .soil-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;background:#f9fafb;font-size:14px;font-weight:600;color:#374151;transition:background .15s}
+        .soil-header:hover{background:#f0fdf4}
+        .soil-header i.fa-chevron-down{transition:transform .2s;color:#9ca3af;font-size:12px}
+        .soil-header.open i.fa-chevron-down{transform:rotate(180deg)}
+        .soil-optional{font-weight:400;color:#9ca3af;font-size:12px}
+        .soil-body{padding:16px;border-top:1px solid #e5e7eb;background:#fff}
+        .soil-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px}
+        .soil-field label{font-size:12px;font-weight:600;color:#374151;display:block;margin-bottom:5px}
+        .soil-range{font-weight:400;color:#9ca3af;font-size:11px}
+        .form-input{width:100%;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border .15s}
+        .form-input:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.1)}
+        .ph-scale{display:flex;align-items:center;gap:6px;margin-top:6px}
+        .ph-acid,.ph-alk{font-size:10px;color:#9ca3af;white-space:nowrap}
+        .ph-bar-wrap{flex:1;position:relative;height:8px}
+        .ph-bar-gradient{width:100%;height:8px;border-radius:4px;background:linear-gradient(to right,#ef4444,#f97316,#eab308,#22c55e,#22c55e,#3b82f6,#6366f1)}
+        .ph-marker{position:absolute;top:-3px;width:14px;height:14px;background:#fff;border:2px solid #111;border-radius:50%;transform:translateX(-50%);transition:left .2s}
+        .soil-hint{font-size:11px;color:#9ca3af;margin-top:4px}
+        .soil-hint i{color:#16a34a}
+        .soil-result-card{border-left:4px solid #16a34a}
+        .soil-result-card.poor{border-left-color:#dc2626}
+        .soil-result-card.moderate{border-left-color:#f59e0b}
+        .soil-status-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+        .soil-status-chip{padding:3px 12px;border-radius:100px;font-size:12px;font-weight:700}
+        .soil-status-chip.good{background:#dcfce7;color:#166534}
+        .soil-status-chip.moderate{background:#fef9c3;color:#854d0e}
+        .soil-status-chip.poor{background:#fee2e2;color:#991b1b}
+        .soil-summary{font-size:13px;color:#374151;margin-bottom:10px}
+        .soil-warning-item{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;font-size:12px;color:#dc2626;margin-bottom:6px}
+        .soil-advice-item{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;font-size:12px;color:#166534;margin-bottom:6px}
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <div class="nav-inner">
+        <div class="brand">
+            <span class="brand-leaf">🌿</span>
+            <span class="brand-name">AgriLeaf</span>
+            <span class="brand-tag">AI</span>
+        </div>
+        <div class="model-badge" id="modelBadge">
+            <span class="badge-dot" id="badgeDot"></span>
+            <span id="badgeText">Checking model...</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#analyzer">Analyze</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#history">History</a></li>
+            <li><a href="/tools" style="color:#2d6a4f;font-weight:700">Farm Tools</a></li>
+            <li><a href="/advanced" style="color:#2d6a4f;font-weight:700">AI Features</a></li>
+        </ul>
+        <div class="nav-user">
+            <span class="nav-username"><i class="fas fa-user-circle"></i>{{ full_name }}</span>
+            <a href="/dashboard" class="nav-btn nav-btn-dash"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="/logout" class="nav-btn nav-btn-out"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+</nav>
+
+<header class="hero">
+    <div class="hero-inner">
+        <p class="hero-eyebrow">Department of AI & ML · Batch A8</p>
+        <h1>Detect Leaf Disease<br><span class="hero-accent">with Deep Learning</span></h1>
+        <p class="hero-sub">Upload a leaf photo → AI identifies the disease → Get instant treatment recommendations. Supports 8 crops including Tomato, Potato, Rice, Wheat, Cotton, Mango & Banana with 40 disease classes.</p>
+        <div class="hero-stats">
+            <div class="hstat"><strong>40</strong><span>Disease Classes</span></div>
+            <div class="hstat"><strong>8</strong><span>Crops Supported</span></div>
+            <div class="hstat"><strong>CNN</strong><span>MobileNetV2</span></div>
+            <div class="hstat"><strong>3</strong><span>AI Modules</span></div>
+        </div>
+        <a href="#analyzer" class="hero-cta">Analyze a Leaf <i class="fas fa-arrow-down"></i></a>
+    </div>
+    <div class="hero-graphic">
+        <div class="hg-ring hg-ring1"></div>
+        <div class="hg-ring hg-ring2"></div>
+        <div class="hg-ring hg-ring3"></div>
+        <div class="hg-center">🌿</div>
+    </div>
+</header>
+
+<section class="section analyzer-section" id="analyzer">
+    <div class="section-label">CORE FEATURE</div>
+    <h2 class="section-title">Leaf Disease Analyzer</h2>
+    <p class="section-sub">Upload a clear photo of the affected leaf for instant AI diagnosis</p>
+
+    <div class="analyzer-grid">
+        <div class="panel upload-panel">
+
+            <div class="form-row">
+                <label class="form-label"><i class="fas fa-seedling"></i> Crop Type</label>
+                <select id="cropType" class="form-select">
+                    <optgroup label="── Auto ──">
+                        <option value="auto">🔍 Auto Detect</option>
+                    </optgroup>
+                    <optgroup label="── Supported Crops ──">
+                        <option value="tomato">🍅 Tomato</option>
+                        <option value="potato">🥔 Potato</option>
+                        <option value="pepper">🌶️ Bell Pepper</option>
+                        <option value="rice">🌾 Rice</option>
+                        <option value="wheat">🌿 Wheat</option>
+                        <option value="cotton">🌱 Cotton</option>
+                        <option value="mango">🥭 Mango</option>
+                        <option value="banana">🍌 Banana</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <!-- SOIL DATA SECTION -->
+            <div class="soil-section">
+                <div class="soil-header" onclick="toggleSoil()">
+                    <span><i class="fas fa-flask"></i> Soil Data <span class="soil-optional">(optional — improves diagnosis)</span></span>
+                    <i class="fas fa-chevron-down" id="soilChevron"></i>
+                </div>
+                <div class="soil-body" id="soilBody" style="display:none">
+                    <div class="soil-row">
+                        <div class="soil-field">
+                            <label class="form-label">Soil pH <span class="soil-range">(0–14)</span></label>
+                            <input type="number" id="soilPh" min="0" max="14" step="0.1"
+                                   placeholder="e.g. 6.5" class="form-input" oninput="updatePhBar()">
+                            <div class="ph-scale">
+                                <span class="ph-acid">Acidic</span>
+                                <div class="ph-bar-wrap">
+                                    <div class="ph-bar-gradient"></div>
+                                    <div class="ph-marker" id="phMarker" style="display:none"></div>
+                                </div>
+                                <span class="ph-alk">Alkaline</span>
+                            </div>
+                        </div>
+                        <div class="soil-field">
+                            <label class="form-label">Nitrogen Level</label>
+                            <select id="nitrogenLevel" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="low">🔴 Low</option>
+                                <option value="medium">🟡 Medium</option>
+                                <option value="high">🟢 High</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="soil-hint"><i class="fas fa-info-circle"></i> Get soil pH from your nearest Krishi Vigyan Kendra or use a soil test kit (₹50–200 at agri shops).</p>
+                </div>
+            </div>
+
+            <div class="dropzone" id="dropzone">
+                <input type="file" id="fileInput" accept="image/*" hidden>
+                <div class="dz-idle" id="dzIdle">
+                    <div class="dz-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <p class="dz-title">Drop your leaf image here</p>
+                    <p class="dz-sub">JPG · PNG · WEBP · Max 16MB</p>
+                    <button class="btn-outline" onclick="document.getElementById('fileInput').click()">Choose File</button>
+                </div>
+                <div class="dz-preview" id="dzPreview" style="display:none">
+                    <img id="previewImg" src="" alt="Preview">
+                    <button class="dz-remove" id="removeBtn"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+
+            <div class="tips-box">
+                <p class="tips-title"><i class="fas fa-lightbulb"></i> Tips for better results</p>
+                <ul>
+                    <li>Use natural daylight — avoid harsh shadows</li>
+                    <li>Fill at least 60% of frame with the leaf</li>
+                    <li>Capture the most affected area clearly</li>
+                    <li>Keep camera steady to avoid blur</li>
+                </ul>
+            </div>
+
+            <button class="btn-analyze" id="analyzeBtn" disabled>
+                <i class="fas fa-microscope"></i> Analyze Leaf
+            </button>
+        </div>
+
+        <div class="panel results-panel" id="resultsPanel">
+            <div class="rs-empty" id="rsEmpty">
+                <div class="rs-empty-icon">🔬</div>
+                <h3>Ready to Analyze</h3>
+                <p>Upload a leaf image and click "Analyze Leaf" to get disease detection, severity assessment, and treatment recommendations.</p>
+                <div class="crop-grid">
+                    <span>🍅 Tomato (10)</span><span>🥔 Potato (3)</span>
+                    <span>🌶️ Pepper (2)</span><span>🌾 Rice (4)</span>
+                    <span>🌿 Wheat (5)</span><span>🌱 Cotton (4)</span>
+                    <span>🥭 Mango (8)</span><span>🍌 Banana (4)</span>
+                </div>
+            </div>
+
+            <div class="rs-loading" id="rsLoading" style="display:none">
+                <div class="scan-animation">
+                    <div class="scan-ring"></div>
+                    <div class="scan-pulse"></div>
+                    <span>🌿</span>
+                </div>
+                <h3>Analyzing Leaf...</h3>
+                <div class="loading-steps" id="loadingSteps">
+                    <div class="ls" id="ls1"><i class="fas fa-circle-notch fa-spin"></i> Preprocessing image</div>
+                    <div class="ls pending" id="ls2"><i class="fas fa-circle"></i> Extracting CNN features</div>
+                    <div class="ls pending" id="ls3"><i class="fas fa-circle"></i> Running disease classifier</div>
+                    <div class="ls pending" id="ls4"><i class="fas fa-circle"></i> Generating treatment plan</div>
+                </div>
+            </div>
+
+            <div class="rs-results" id="rsResults" style="display:none">
+                <div class="result-header" id="resultHeader">
+                    <div class="result-emoji" id="resultEmoji"></div>
+                    <div class="result-title-block">
+                        <h3 id="resultDisease">Disease</h3>
+                        <p id="resultMeta">Crop · Pathogen</p>
+                    </div>
+                    <div class="confidence-chip">
+                        <span id="confidenceNum">0%</span>
+                        <small>confidence</small>
+                    </div>
+                </div>
+
+                <div class="ai-predictions" id="aiPredictions">
+                    <p class="ai-pred-title"><i class="fas fa-brain"></i> CNN Top Predictions</p>
+                    <div id="predList"></div>
+                    <p class="ai-pred-model" id="modelUsed"></p>
+                </div>
+
+                <!-- FOLLOW-UP QUESTIONS -->
+                <div class="info-card" id="followupCard" style="display:none;border:2px solid #2d6a4f;background:#f0fdf4">
+                    <h4 style="color:#1a3d2b"><i class="fas fa-question-circle"></i> Confirm Your Diagnosis</h4>
+                    <p style="font-size:13px;color:#374151;margin-bottom:16px">Answer these quick questions to verify the AI result and adjust severity accurately.</p>
+                    <div id="followupQuestions"></div>
+                    <button onclick="submitFollowup()" style="background:#1a3d2b;color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:12px;font-family:inherit"><i class="fas fa-check"></i> Confirm Diagnosis</button>
+                </div>
+                <div class="info-card" id="confirmResult" style="display:none">
+                    <div id="confirmMessage" style="font-size:14px;font-weight:600;padding:12px;border-radius:8px"></div>
+                </div>
+
+                <!-- FOLLOW-UP QUESTIONS -->
+                <div class="info-card" id="followupCard" style="display:none;border:2px solid #2d6a4f;background:#f0fdf4">
+                    <h4 style="color:#1a3d2b"><i class="fas fa-question-circle"></i> Confirm Your Diagnosis</h4>
+                    <p style="font-size:13px;color:#374151;margin-bottom:16px">Answer these quick questions to verify the AI result and adjust severity accurately.</p>
+                    <div id="followupQuestions"></div>
+                    <button onclick="submitFollowup()" style="background:#1a3d2b;color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:12px;font-family:inherit"><i class="fas fa-check"></i> Confirm Diagnosis</button>
+                </div>
+                <div class="info-card" id="confirmResult" style="display:none">
+                    <div id="confirmMessage" style="font-size:14px;font-weight:600;padding:12px;border-radius:8px"></div>
+                </div>
+
+                <div class="severity-block">
+                    <div class="severity-labels-row">
+                        <span>Severity Assessment</span>
+                        <span class="severity-chip" id="severityChip"></span>
+                    </div>
+                    <div class="severity-track">
+                        <div class="severity-bar-fill" id="severityFill"></div>
+                    </div>
+                    <p class="severity-desc" id="severityDesc"></p>
+                </div>
+
+                <div class="info-card">
+                    <h4><i class="fas fa-info-circle"></i> About This Disease</h4>
+                    <p id="diseaseDesc"></p>
+                    <div class="symptom-tags" id="symptomTags"></div>
+                </div>
+
+                <div class="info-card">
+                    <h4><i class="fas fa-first-aid"></i> Treatment Recommendations</h4>
+                    <div class="tab-row">
+                        <button class="tab active" onclick="switchTab('chemical', this)">⚗️ Chemical</button>
+                        <button class="tab" onclick="switchTab('organic', this)">🌱 Organic</button>
+                        <button class="tab" onclick="switchTab('prevention', this)">🛡️ Prevention</button>
+                    </div>
+                    <ul class="treat-list" id="treatList"></ul>
+                    <div class="timing-note" id="timingNote"></div>
+                </div>
+
+                <div class="info-card yield-card" id="yieldCard">
+                    <h4><i class="fas fa-chart-bar"></i> Estimated Yield Loss (if untreated)</h4>
+                    <div class="yield-big" id="yieldBig"></div>
+                </div>
+
+                <div class="info-card soil-result-card" id="soilResultCard" style="display:none">
+                    <h4><i class="fas fa-flask"></i> Soil Analysis</h4>
+                    <div class="soil-status-row" id="soilStatusRow"></div>
+                    <p class="soil-summary" id="soilSummary"></p>
+                    <div id="soilWarnings"></div>
+                    <div id="soilAdvice"></div>
+                </div>
+
+                <div class="result-actions">
+                    <button class="btn-outline" onclick="downloadReport()"><i class="fas fa-download"></i> Download Report</button>
+                    <button style="background:#25d366;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:inherit;margin-left:8px" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> Share on WhatsApp</button>
+                    <button class="btn-primary-sm" onclick="resetAnalyzer()"><i class="fas fa-redo"></i> New Analysis</button>
+                </div>
+            </div>
+
+            <div class="rs-error" id="rsError" style="display:none">
+                <div class="rs-empty-icon">⚠️</div>
+                <h3>Analysis Failed</h3>
+                <p id="errorMsg">Something went wrong. Please try again.</p>
+                <button class="btn-primary-sm" onclick="resetAnalyzer()">Try Again</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section how-section" id="how">
+    <div class="section-label">TECHNOLOGY</div>
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub">3 modules working together — from image to diagnosis</p>
+    <div class="modules-grid">
+        <div class="module-card">
+            <div class="mod-num">Module 1</div>
+            <div class="mod-icon">📱</div>
+            <h3>User Interaction</h3>
+            <p>Farmer logs in, captures leaf photo, selects crop type. Interface handles upload and displays real-time results.</p>
+            <div class="mod-tech">HTML · CSS · JavaScript</div>
+        </div>
+        <div class="module-arrow">→</div>
+        <div class="module-card">
+            <div class="mod-num">Module 2</div>
+            <div class="mod-icon">🧠</div>
+            <h3>Disease Detection & Analysis</h3>
+            <p>MobileNetV2 CNN processes the 224×224 image through convolutional layers. Outputs disease class + severity.</p>
+            <div class="mod-tech">TensorFlow · Keras · MobileNetV2</div>
+        </div>
+        <div class="module-arrow">→</div>
+        <div class="module-card">
+            <div class="mod-num">Module 3</div>
+            <div class="mod-icon">💊</div>
+            <h3>Recommendation & Storage</h3>
+            <p>Matched against disease database. Chemical + organic treatments generated. Result saved to farmer's history.</p>
+            <div class="mod-tech">Flask · Python · SQLite</div>
+        </div>
+    </div>
+    <div class="pipeline">
+        <h3>CNN Architecture (MobileNetV2 + Custom Head)</h3>
+        <div class="pipeline-steps">
+            <div class="ps"><span>Input</span><small>224×224×3</small></div>
+            <div class="ps-arrow">→</div>
+            <div class="ps"><span>MobileNetV2</span><small>Feature Extraction</small></div>
+            <div class="ps-arrow">→</div>
+            <div class="ps"><span>Global Avg Pool</span><small>1280 features</small></div>
+            <div class="ps-arrow">→</div>
+            <div class="ps"><span>Dense 512</span><small>ReLU + Dropout 0.4</small></div>
+            <div class="ps-arrow">→</div>
+            <div class="ps"><span>Dense 256</span><small>ReLU + Dropout 0.3</small></div>
+            <div class="ps-arrow">→</div>
+            <div class="ps highlight"><span>Output</span><small>40 classes</small></div>
+        </div>
+    </div>
+</section>
+
+<section class="section history-section" id="history">
+    <div class="section-label">TRACKING</div>
+    <h2 class="section-title">My Analysis History</h2>
+    <p class="section-sub">Every analysis is automatically saved to your account, <strong>{{ full_name }}</strong>.</p>
+    <div class="history-controls">
+        <button class="btn-primary-sm" onclick="loadHistory()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <button class="btn-danger" onclick="clearHistory()"><i class="fas fa-trash"></i> Clear History</button>
+        <a href="/dashboard" class="btn-primary-sm" style="background:#374151;text-decoration:none"><i class="fas fa-th-large"></i> Full Dashboard</a>
+    </div>
+    <div class="history-stats" id="historyStats" style="display:none">
+        <div class="hs-item"><span id="hsTotalLabel">0</span><small>Total</small></div>
+        <div class="hs-item healthy"><span id="hsHealthyLabel">0</span><small>Healthy</small></div>
+        <div class="hs-item diseased"><span id="hsDiseaseLabel">0</span><small>Diseased</small></div>
+    </div>
+    <div id="historyContainer">
+        <div class="history-placeholder">Loading your history...</div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <p class="footer-title">🌿 AgriLeaf — AI-Based Leaf Health Analyzer</p>
+        <p>Department of Artificial Intelligence & Machine Learning</p>
+        <p class="footer-team">D.Neha (7333) &nbsp;·&nbsp; D.Abhishikth (7334) &nbsp;·&nbsp; Y.Namitha (7336) &nbsp;·&nbsp; G.Meghana (7342)</p>
+        <p class="footer-guide">Guide: Mrs. K.Renuka &nbsp;|&nbsp; HOD: Dr. Vadivelan Natarajan</p>
+    </div>
+</footer>
+
+<script src="/static/js/main.js?v=2026031801"></script>
+</body>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriLeaf — AI Crop Health Analysis</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --green:#1a3d2b; --leaf:#2d6a4f; --mint:#52b788; --cream:#f8f4ef; --text:#1a1a1a; --muted:#6b7280; --border:#e5e7eb; }
+    body { font-family: 'Geist', sans-serif; background: #fff; color: var(--text); }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 64px; background: rgba(255,255,255,.97); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 40px; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; margin-right: auto; }
+    .bl { width: 34px; height: 34px; background: var(--green); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+    .bn { font-size: 16px; font-weight: 700; color: var(--text); }
+    .bt { font-size: 9px; font-weight: 700; color: var(--mint); background: rgba(82,183,136,.12); border: 1px solid rgba(82,183,136,.25); padding: 2px 7px; border-radius: 4px; }
+    .nav a.nl { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; padding: 6px 14px; border-radius: 8px; }
+    .nav a.nl:hover { color: var(--text); background: #f3f4f6; }
+    .nav-signup { background: var(--green); color: #fff; font-size: 13px; font-weight: 600; padding: 8px 18px; border-radius: 9px; text-decoration: none; }
+    .nav-login { font-size: 13px; font-weight: 600; color: var(--text); border: 1.5px solid var(--border); padding: 7px 16px; border-radius: 9px; cursor: pointer; background: none; font-family: inherit; }
+    .nav-login:hover { border-color: var(--green); color: var(--green); }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 100px 24px 60px; background: linear-gradient(160deg, #f0faf4 0%, #fff 60%); position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(82,183,136,.12) 0%, transparent 70%); pointer-events: none; }
+    .badge { display: inline-flex; align-items: center; gap: 7px; background: #fff; border: 1.5px solid #bbf7d0; border-radius: 100px; padding: 6px 16px; font-size: 12px; font-weight: 600; color: var(--leaf); margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+    h1 { font-family: 'Instrument Serif', serif; font-size: clamp(42px, 7vw, 80px); font-weight: 400; color: var(--text); letter-spacing: -2px; line-height: 1.08; margin-bottom: 20px; }
+    h1 em { font-style: italic; color: var(--leaf); }
+    .hero-sub { font-size: 17px; color: var(--muted); max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
+    .btn-p { background: var(--green); color: #fff; font-size: 15px; font-weight: 600; padding: 14px 28px; border-radius: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 9px; transition: all .2s; border: none; cursor: pointer; font-family: inherit; }
+    .btn-p:hover { background: #0f2318; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(26,61,43,.25); }
+    .btn-s { font-size: 15px; font-weight: 600; padding: 13px 24px; border-radius: 12px; border: 1.5px solid var(--border); color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 9px; transition: all .2s; }
+    .btn-s:hover { border-color: var(--leaf); color: var(--leaf); transform: translateY(-1px); }
+    .stats { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+    .stat-n { font-size: 28px; font-weight: 800; color: var(--green); letter-spacing: -1px; }
+    .stat-l { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
+
+    /* TICKER */
+    .ticker { background: var(--green); padding: 14px 0; overflow: hidden; white-space: nowrap; }
+    .ticker-inner { display: inline-flex; gap: 8px; animation: scroll 25s linear infinite; }
+    @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    .crop-chip { background: rgba(255,255,255,.12); color: rgba(255,255,255,.9); font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 100px; display: inline-flex; align-items: center; gap: 6px; }
+
+    /* FEATURES */
+    .section { max-width: 1100px; margin: 0 auto; padding: 80px 28px; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--mint); text-align: center; margin-bottom: 10px; }
+    .section-title { font-family: 'Instrument Serif', serif; font-size: 36px; font-weight: 400; color: var(--text); text-align: center; letter-spacing: -1px; margin-bottom: 48px; }
+    .feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .feat-card { background: #f5f0e8; border: none; border-radius: 20px; padding: 32px 28px; transition: all .25s; }
+    .feat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 48px rgba(0,0,0,.10); }
+    .feat-icon { font-size: 44px; margin-bottom: 20px; display: block; line-height: 1; }
+    .feat-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; color: var(--text); letter-spacing: -.3px; }
+    .feat-desc { font-size: 14px; color: #555; line-height: 1.7; }
+
+    /* HOW */
+    .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .how-card { text-align: center; }
+    .how-num { width: 52px; height: 52px; border-radius: 50%; background: var(--green); color: #fff; font-size: 20px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+    .how-title { font-size: 15px; font-weight: 700; margin-bottom: 7px; }
+    .how-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* CTA */
+    .cta { background: linear-gradient(135deg, var(--green), #0f2318); border-radius: 24px; padding: 60px 40px; text-align: center; margin: 0 28px 80px; }
+    .cta h2 { font-family: 'Instrument Serif', serif; font-size: 36px; color: #fff; margin-bottom: 12px; letter-spacing: -1px; }
+    .cta p { color: rgba(255,255,255,.7); font-size: 15px; margin-bottom: 28px; }
+    .btn-white { background: #fff; color: var(--green); font-size: 14px; font-weight: 700; padding: 13px 26px; border-radius: 10px; border: none; cursor: pointer; font-family: inherit; transition: all .2s; display: inline-block; text-decoration: none; }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,.2); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 32px 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; max-width: 1100px; margin: 0 auto; }
+    footer .fl { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    footer .fr { font-size: 12px; color: var(--muted); }
+
+    /* MODAL */
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+    .overlay.open { opacity: 1; pointer-events: all; }
+    .modal { background: #fff; border-radius: 20px; padding: 36px; width: 100%; max-width: 420px; position: relative; box-shadow: 0 24px 64px rgba(0,0,0,.2); animation: slideUp .25s ease; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .modal-close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; font-size: 16px; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { background: #f3f4f6; }
+    .modal-top { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--mint); margin-bottom: 8px; }
+    .modal-title { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--text); letter-spacing: -.5px; margin-bottom: 4px; }
+    .modal-title em { font-style: italic; color: var(--leaf); }
+    .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+    .mfield { margin-bottom: 14px; }
+    .mfield label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--text); margin-bottom: 6px; }
+    .minput { position: relative; }
+    .minput i { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 13px; }
+    .minput input { width: 100%; padding: 11px 14px 11px 38px; border: 1.5px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 14px; outline: none; background: #f9fafb; transition: all .2s; }
+    .minput input:focus { border-color: var(--leaf); background: #fff; box-shadow: 0 0 0 3px rgba(45,106,79,.08); }
+    .merr { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; border-radius: 9px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px; display: none; }
+    .merr.show { display: block; }
+    .msub { width: 100%; background: var(--green); color: #fff; border: none; padding: 13px; border-radius: 11px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 9px; transition: all .2s; margin-top: 4px; }
+    .msub:hover { background: #0f2318; }
+    .mdiv { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+    .mdiv::before, .mdiv::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .mdiv span { font-size: 12px; color: var(--muted); }
+    .mreg { text-align: center; font-size: 13px; color: var(--muted); }
+    .mreg a { color: var(--leaf); font-weight: 600; text-decoration: none; }
+
+    @media(max-width:768px) {
+      .feat-grid, .how-grid { grid-template-columns: 1fr; }
+      .nav a.nl { display: none; }
+      .cta { margin: 0 16px 60px; padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="brand">
+    <div class="bl">&#127807;</div>
+    <span class="bn">AgriLeaf</span>
+    <span class="bt">AI</span>
+  </a>
+  <a href="#features" class="nl">Features</a>
+  <a href="#how" class="nl">How it works</a>
+  <button class="nav-login" onclick="openModal()">Log in</button>
+  <a href="/register" class="nav-signup">Sign up free</a>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="badge"><span class="badge-dot"></span> AI Model Active &middot; 89% Accuracy &middot; 40+ Diseases</div>
+    <h1>Protect your crops<br>with <em>AI diagnosis</em></h1>
+    <p class="hero-sub">Take a photo of any leaf. AgriLeaf identifies the disease, how serious it is, and gives exact treatment steps &mdash; free, in your language.</p>
+    <div class="hero-btns">
+      <button class="btn-p" onclick="openModal()"><i class="fas fa-leaf"></i> Start for free</button>
+      <a href="#how" class="btn-s"><i class="fas fa-play"></i> See how it works</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-n">40+</div><div class="stat-l">Diseases</div></div>
+      <div class="stat"><div class="stat-n">89%</div><div class="stat-l">Accuracy</div></div>
+      <div class="stat"><div class="stat-n">4</div><div class="stat-l">Languages</div></div>
+      <div class="stat"><div class="stat-n">Free</div><div class="stat-l">Always</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="crop-chip">&#127805; Tomato</span><span class="crop-chip">&#127806; Rice</span><span class="crop-chip">&#129364; Potato</span><span class="crop-chip">&#127807; Wheat</span><span class="crop-chip">&#127807; Cotton</span><span class="crop-chip">&#129363; Mango</span><span class="crop-chip">&#127820; Banana</span><span class="crop-chip">&#127798; Chilli</span><span class="crop-chip">&#127805; Tomato</span><span class="crop-chip">&#127806; Rice</span><span class="crop-chip">&#129364; Potato</span><span class="crop-chip">&#127807; Wheat</span><span class="crop-chip">&#127807; Cotton</span><span class="crop-chip">&#129363; Mango</span><span class="crop-chip">&#127820; Banana</span><span class="crop-chip">&#127798; Chilli</span>
+  </div>
+</div>
+
+<div id="features" class="section">
+  <p class="section-label">Features</p>
+  <h2 class="section-title">Everything a farmer needs</h2>
+  <div class="feat-grid">
+    <div class="feat-card"><span class="feat-icon">🔬</span><div class="feat-title">Instant Disease Detection</div><div class="feat-desc">Upload any leaf photo. Our CNN model trained on 40+ diseases identifies the problem in seconds with 89% accuracy.</div></div>
+    <div class="feat-card"><span class="feat-icon">⚠️</span><div class="feat-title">Severity Assessment</div><div class="feat-desc">Know if it's mild, moderate or severe. Understand crop loss risk so you can prioritise treatment urgency.</div></div>
+    <div class="feat-card"><span class="feat-icon">💊</span><div class="feat-title">Treatment Plans</div><div class="feat-desc">Get chemical and organic treatment options with dosage, spray timing, and local Indian context for each disease.</div></div>
+    <div class="feat-card"><span class="feat-icon">🗣️</span><div class="feat-title">Your Language</div><div class="feat-desc">Full support for Telugu, Hindi, Tamil and English. Read results and treatment advice in your native language.</div></div>
+    <div class="feat-card"><span class="feat-icon">⛈️</span><div class="feat-title">Weather-Based Alerts</div><div class="feat-desc">Real-time disease risk alerts based on your location. Know when humidity and temperature favour outbreaks.</div></div>
+    <div class="feat-card"><span class="feat-icon">📱</span><div class="feat-title">Works Offline</div><div class="feat-desc">Install AgriLeaf as an app on your phone. History, tips and the crop calendar work even without internet.</div></div>
+  </div>
+</div>
+
+<div id="how" style="background:#f9fafb;padding:1px 0">
+  <div class="section">
+    <p class="section-label">How It Works</p>
+    <h2 class="section-title">Three steps to diagnosis</h2>
+    <div class="how-grid">
+      <div class="how-card"><div class="how-num">1</div><div class="how-title">Take a Photo</div><div class="how-desc">Upload a clear photo of the affected leaf from your phone or computer.</div></div>
+      <div class="how-card"><div class="how-num">2</div><div class="how-title">AI Analyses</div><div class="how-desc">Our CNN model scans for 40+ diseases and gives a confidence-rated diagnosis.</div></div>
+      <div class="how-card"><div class="how-num">3</div><div class="how-title">Get Treatment</div><div class="how-desc">Receive specific treatment steps, dosage, and prevention tips instantly.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="padding-bottom:0">
+  <div class="cta">
+    <h2>Start protecting your crops today</h2>
+    <p>Free forever. No app store needed. Works on any phone.</p>
+    <button class="btn-white" onclick="openModal()">Get started free</button>
+  </div>
+</div>
+
+<footer>
+  <div class="fl">
+    <strong>AgriLeaf AI</strong> &mdash; Dept. of AI &amp; ML, Batch A8<br>
+    D.Neha &middot; D.Abhishikth &middot; Y.Namitha &middot; G.Meghana
+  </div>
+  <div class="fr">&#169; 2026 AgriLeaf. All rights reserved.</div>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal(null)">&times;</button>
+    <div class="modal-top">FARMER PORTAL</div>
+    <div class="modal-title">Welcome <em>back.</em></div>
+    <div class="modal-sub">Sign in to scan your crops</div>
+
+    {% if error %}<div class="merr show">{{ error }}</div>{% endif %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}{% for cat, msg in messages %}<div class="merr show">{{ msg }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/login">
+      <div class="mfield">
+        <label>Username</label>
+        <div class="minput"><i class="fas fa-user"></i><input type="text" name="username" placeholder="Enter your username" required autocomplete="username"></div>
+      </div>
+      <div class="mfield">
+        <label>Password</label>
+        <div class="minput"><i class="fas fa-lock"></i><input type="password" name="password" placeholder="Enter your password" required autocomplete="current-password"></div>
+      </div>
+      <button type="submit" class="msub"><i class="fas fa-arrow-right-to-bracket"></i> Sign In</button>
+    </form>
+    <div class="mdiv"><span>New to AgriLeaf?</span></div>
+    <p class="mreg"><a href="/register">Create your free account &rarr;</a></p>
+  </div>
+</div>
+
+<script>
+function openModal() {
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('overlay'))
+    document.getElementById('overlay').classList.remove('open');
+}
+{% if error %}
+document.addEventListener('DOMContentLoaded', function(){ document.getElementById('overlay').classList.add('open'); });
+{% endif %}
+{% with messages = get_flashed_messages() %}{% if messages %}
+document.addEventListener('DOMContentLoaded', function(){ document.getElementById('overlay').classList.add('open'); });
+{% endif %}{% endwith %}
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "neha01": {
+    "username": "neha01",
+    "full_name": "NEHA",
+    "password": "scrypt:32768:8:1$gJPuVVhTJIHuLwcM$3d005494009baae0d28198447c770f8246fd6fbe24c10c3200f8c762e7615e0826e73e507af7811812630d9bccf7c4a65c41fb6da1f30a3d401d1c4cccd256d6",
+    "village": "WARANGAL",
+    "crop_types": "RICE",
+    "joined": "24 Feb 2026"
+  },
+  "neha08": {
+    "username": "neha08",
+    "full_name": "NEHA",
+    "password": "scrypt:32768:8:1$nWWF1boKGProllJb$ae63a779dc65ee37b000a2b26e00b1bee785913ee7abe664dd1df0d05c2c25018dd9ca1b2b091c6304d8ce96adafef7c4faab85d865bba2094ef08cebadb613a",
+    "village": "WARANGAL",
+    "crop_types": "RICE",
+    "joined": "24 Feb 2026"
+  }
+}

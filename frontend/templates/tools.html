@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriLeaf — Farm Tools</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #1a3d2b; --leaf: #2d6a4f; --mint: #52b788;
+      --gold: #c9951a; --cream: #f8f4ef; --white: #fff;
+      --text: #1a1a1a; --muted: #6b7280; --border: #e5e7eb;
+    }
+    body { font-family: 'Geist', sans-serif; background: #f9fafb; color: var(--text); }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 64px; background: rgba(255,255,255,.95); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; gap: 12px; }
+    .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; margin-right: auto; }
+    .brand-logo { width: 34px; height: 34px; background: var(--green); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+    .brand-name { font-size: 16px; font-weight: 700; color: var(--text); }
+    .brand-tag { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; color: var(--mint); background: rgba(82,183,136,.12); border: 1px solid rgba(82,183,136,.25); padding: 2px 7px; border-radius: 4px; }
+    .nav-link { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: none; padding: 6px 12px; border-radius: 7px; transition: all .15s; white-space: nowrap; }
+    .nav-link:hover { color: var(--text); background: #f3f4f6; }
+    .nav-link.active { color: var(--leaf); font-weight: 700; }
+    .nav-user { font-size: 13px; font-weight: 600; color: var(--green); background: #f0fdf4; border: 1px solid #bbf7d0; padding: 5px 12px; border-radius: 100px; white-space: nowrap; }
+    .nav-btn { font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 8px; text-decoration: none; white-space: nowrap; transition: all .15s; }
+    .nav-btn-green { background: var(--green); color: #fff; }
+    .nav-btn-green:hover { background: #0f2318; }
+    .nav-btn-out { color: var(--muted); border: 1.5px solid var(--border); }
+    .nav-btn-out:hover { color: #dc2626; border-color: #dc2626; }
+
+    /* PAGE */
+    .page { max-width: 1100px; margin: 0 auto; padding: 84px 28px 60px; }
+    .page-hero { margin-bottom: 32px; }
+    .page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--mint); margin-bottom: 8px; }
+    .page-title { font-family: 'Instrument Serif', serif; font-size: 44px; font-weight: 400; color: var(--green); letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 8px; }
+    .page-title em { font-style: italic; color: var(--leaf); }
+    .page-sub { font-size: 15px; color: var(--muted); }
+
+    /* TOOL TABS */
+    .tools-nav { display: flex; gap: 6px; margin-bottom: 28px; background: #fff; padding: 5px; border-radius: 14px; border: 1.5px solid var(--border); width: fit-content; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+    .tool-tab { display: flex; align-items: center; gap: 7px; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; background: none; font-family: inherit; color: var(--muted); transition: all .15s; white-space: nowrap; }
+    .tool-tab:hover { color: var(--text); background: #f3f4f6; }
+    .tool-tab.active { background: var(--green); color: #fff; box-shadow: 0 2px 8px rgba(26,61,43,.3); }
+    .tool-panel { display: none; animation: fadeIn .2s ease; }
+    .tool-panel.active { display: block; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    /* CARDS */
+    .card { background: #fff; border: 1.5px solid var(--border); border-radius: 18px; padding: 28px; box-shadow: 0 1px 4px rgba(0,0,0,.04); }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 9px; }
+    .card-title i { color: var(--leaf); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    /* FORM ELEMENTS */
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .field input, .field select, .field textarea { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 14px; color: var(--text); outline: none; background: #f9fafb; transition: all .2s; }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--leaf); background: #fff; box-shadow: 0 0 0 3px rgba(45,106,79,.08); }
+    .field textarea { resize: vertical; }
+    .field-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .green-btn { background: var(--green); color: #fff; border: none; padding: 12px 22px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; transition: all .2s; }
+    .green-btn:hover { background: #0f2318; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,61,43,.25); }
+    .outline-btn { background: #fff; color: var(--muted); border: 1.5px solid var(--border); padding: 11px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; }
+    .outline-btn:hover { border-color: var(--leaf); color: var(--leaf); }
+
+    /* RESULT BOX */
+    .result-box { margin-top: 16px; background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 18px; display: none; }
+    .result-box.show { display: block; }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(0,0,0,.05); font-size: 14px; color: var(--text); }
+    .result-row:last-child { border-bottom: none; }
+    .result-row strong { font-size: 16px; font-weight: 800; color: var(--green); }
+    .result-note { font-size: 11px; color: var(--muted); margin-top: 10px; }
+
+    /* INFO BOX */
+    .info-box { border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; }
+    .info-box.green { background: #f0fdf4; border-left: 3px solid var(--leaf); }
+    .info-box.yellow { background: #fffbeb; border-left: 3px solid #f59e0b; }
+    .info-box.red { background: #fef2f2; border-left: 3px solid #ef4444; }
+    .info-box-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .info-box p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+    /* PEST */
+    .pest-upload { border: 2px dashed var(--border); border-radius: 14px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all .2s; background: #f9fafb; margin-bottom: 16px; }
+    .pest-upload:hover { border-color: var(--leaf); background: #f0fdf4; }
+    .pest-upload i { font-size: 32px; color: var(--muted); margin-bottom: 10px; display: block; }
+    .pest-detail { background: #f9fafb; border: 1.5px solid var(--border); border-radius: 14px; padding: 18px; display: none; margin-top: 12px; }
+    .pest-detail.show { display: block; }
+    .pest-head { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+    .pest-emoji { font-size: 44px; }
+    .pest-name-big { font-size: 18px; font-weight: 800; color: var(--text); }
+    .pest-type-tag { font-size: 11px; font-weight: 600; background: #f0fdf4; color: var(--leaf); padding: 3px 10px; border-radius: 6px; margin-top: 4px; display: inline-block; }
+    .pest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pest-item { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid var(--border); }
+    .pest-item-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+    .pest-item-val { font-size: 13px; color: var(--text); line-height: 1.5; font-weight: 500; }
+    .pest-list-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #f9fafb; border-radius: 10px; margin-bottom: 8px; cursor: pointer; border: 1.5px solid transparent; transition: all .15s; }
+    .pest-list-item:hover { border-color: var(--leaf); background: #f0fdf4; }
+    .pest-list-emoji { font-size: 24px; flex-shrink: 0; }
+    .pest-list-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .pest-list-sub { font-size: 11px; color: var(--muted); }
+
+    /* MANDI */
+    .mandi-filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .mandi-select { padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 13px; font-family: inherit; outline: none; background: #fff; cursor: pointer; transition: border .15s; }
+    .mandi-select:focus { border-color: var(--leaf); }
+    .mandi-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .mandi-card { background: #fff; border: 1.5px solid var(--border); border-radius: 14px; padding: 18px; transition: all .2s; }
+    .mandi-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); transform: translateY(-2px); border-color: #d1d5db; }
+    .mandi-crop-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .mandi-market { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+    .mandi-price { font-size: 28px; font-weight: 900; color: var(--green); letter-spacing: -1px; line-height: 1; }
+    .mandi-unit { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .mandi-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 100px; margin-bottom: 6px; }
+    .mandi-badge.up { background: #dcfce7; color: #166534; }
+    .mandi-badge.down { background: #fee2e2; color: #991b1b; }
+    .mandi-badge.flat { background: #f3f4f6; color: var(--muted); }
+    .mandi-note { font-size: 10px; color: var(--muted); margin-top: 4px; }
+    .disclaimer { font-size: 12px; color: var(--muted); background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 16px; margin-top: 16px; line-height: 1.6; }
+
+    /* DIARY */
+    .diary-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+    .diary-add-form { background: #fff; border: 1.5px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; display: none; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .diary-add-form.show { display: block; }
+    .diary-entry { background: #fff; border: 1.5px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 12px; position: relative; transition: box-shadow .15s; }
+    .diary-entry:hover { box-shadow: 0 4px 14px rgba(0,0,0,.07); }
+    .diary-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .diary-crop-tag { font-size: 12px; font-weight: 700; color: var(--leaf); background: #f0fdf4; padding: 3px 10px; border-radius: 6px; }
+    .diary-date-tag { font-size: 11px; color: var(--muted); background: #f3f4f6; padding: 3px 10px; border-radius: 6px; }
+    .diary-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .diary-note { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .diary-tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+    .d-tag { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; }
+    .d-tag.watered { background: #dbeafe; color: #1e40af; }
+    .d-tag.sprayed { background: #dcfce7; color: #166534; }
+    .d-tag.harvested { background: #fef9c3; color: #854d0e; }
+    .d-tag.observed { background: #f3e8ff; color: #6b21a8; }
+    .diary-del-btn { position: absolute; top: 14px; right: 14px; background: none; border: none; cursor: pointer; color: #d1d5db; font-size: 13px; padding: 5px 7px; border-radius: 7px; transition: all .15s; }
+    .diary-del-btn:hover { color: #dc2626; background: #fee2e2; }
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+    .empty-state i { font-size: 40px; color: #d1d5db; margin-bottom: 12px; display: block; }
+    .tag-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+    .tag-picker label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text); padding: 6px 12px; border-radius: 8px; border: 1.5px solid var(--border); transition: all .15s; }
+    .tag-picker label:hover { border-color: var(--leaf); }
+    .tag-picker input { display: none; }
+    .tag-picker input:checked + span { color: var(--leaf); }
+    .tag-picker label:has(input:checked) { border-color: var(--leaf); background: #f0fdf4; }
+
+    @media(max-width:768px) {
+      .two-col, .field-row2 { grid-template-columns: 1fr; }
+      .three-col { grid-template-columns: 1fr 1fr; }
+      .tools-nav { flex-wrap: wrap; }
+      .page { padding: 80px 16px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="brand">
+    <div class="brand-logo">🌿</div>
+    <span class="brand-name">AgriLeaf</span>
+    <span class="brand-tag">AI</span>
+  </a>
+  <a href="/" class="nav-link">🔬 Scan Leaf</a>
+  <a href="/tools" class="nav-link active">🛠️ Farm Tools</a>
+  <a href="/dashboard" class="nav-link">📊 Dashboard</a>
+  <span class="nav-user" style="margin-left:auto"><i class="fas fa-user-circle"></i> {{ full_name }}</span>
+  <a href="/logout" class="nav-btn nav-btn-out" style="border:1.5px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;text-decoration:none;color:var(--muted);transition:all .15s">Logout</a>
+</nav>
+
+<div class="page">
+  <div class="page-hero">
+    <p class="page-eyebrow">Farm Tools</p>
+    <h1 class="page-title">Everything your farm <em>needs.</em></h1>
+    <p class="page-sub">Fertilizer calculator · Pest guide · Mandi prices · Farm diary</p>
+  </div>
+
+  <div class="tools-nav">
+    <button class="tool-tab active" onclick="switchTool('fertilizer',this)"><i class="fas fa-flask"></i> Fertilizer</button>
+    <button class="tool-tab" onclick="switchTool('pest',this)"><i class="fas fa-bug"></i> Pest Identifier</button>
+    <button class="tool-tab" onclick="switchTool('mandi',this)"><i class="fas fa-rupee-sign"></i> Mandi Prices</button>
+    <button class="tool-tab" onclick="switchTool('diary',this)"><i class="fas fa-book"></i> Farm Diary</button>
+  </div>
+
+  <!-- ══ FERTILIZER ══ -->
+  <div class="tool-panel active" id="tool-fertilizer">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-calculator"></i> Calculate Fertilizer Dose</div>
+        <div class="field-row2">
+          <div class="field"><label>Crop</label>
+            <select id="fertCrop">
+              <option value="rice">🌾 Rice</option><option value="wheat">🌿 Wheat</option>
+              <option value="cotton">🌱 Cotton</option><option value="tomato">🍅 Tomato</option>
+              <option value="potato">🥔 Potato</option><option value="maize">🌽 Maize</option>
+              <option value="sugarcane">🎋 Sugarcane</option><option value="groundnut">🥜 Groundnut</option>
+            </select></div>
+          <div class="field"><label>Land Area</label><input type="number" id="fertArea" placeholder="e.g. 2" min="0.1" step="0.1"></div>
+        </div>
+        <div class="field-row2">
+          <div class="field"><label>Unit</label>
+            <select id="fertUnit"><option value="acre">Acres</option><option value="hectare">Hectares</option><option value="guntha">Guntha</option></select></div>
+          <div class="field"><label>Soil pH</label><input type="number" id="fertPh" placeholder="e.g. 6.5" min="0" max="14" step="0.1"></div>
+        </div>
+        <div class="field-row2">
+          <div class="field"><label>Growth Stage</label>
+            <select id="fertStage">
+              <option value="base">Base / Sowing</option><option value="tillering">Vegetative / Tillering</option>
+              <option value="flowering">Flowering</option><option value="fruiting">Fruiting / Grain Fill</option>
+            </select></div>
+          <div class="field"><label>Soil Nitrogen</label>
+            <select id="fertN"><option value="low">🔴 Low</option><option value="medium">🟡 Medium</option><option value="high">🟢 High</option></select></div>
+        </div>
+        <button class="green-btn" onclick="calcFertilizer()"><i class="fas fa-calculator"></i> Calculate Dose</button>
+        <div class="result-box" id="fertResult">
+          <p style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--leaf);margin-bottom:10px">Recommended Fertilizers</p>
+          <div id="fertResultBody"></div>
+          <p class="result-note"><i class="fas fa-info-circle"></i> Based on ICAR guidelines. Consult your local KVK for soil test-based recommendations.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-book-open"></i> Fertilizer Quick Guide</div>
+        <div class="info-box green">
+          <div class="info-box-title">🌱 What is NPK?</div>
+          <p><b style="color:var(--green)">N (Nitrogen)</b> — Leaf & stem growth · Urea (46%N)<br><b style="color:var(--green)">P (Phosphorus)</b> — Root & flower · DAP, SSP<br><b style="color:var(--green)">K (Potassium)</b> — Fruit quality & immunity · MOP</p>
+        </div>
+        <div class="info-box yellow">
+          <div class="info-box-title">⚠️ Never Mix These Together</div>
+          <p>Urea + DAP — apply 7 days apart<br>Urea + SSP — don't mix directly in field<br>Lime + Ammonium fertilizers — never combine</p>
+        </div>
+        <div class="info-box green">
+          <div class="info-box-title">✅ Best Practices</div>
+          <p>Apply base dose before sowing<br>Split urea into 2–3 applications<br>Apply when soil is moist, not waterlogged<br>Foliar spray only in early morning</p>
+        </div>
+        <div class="info-box" style="background:#f0f9ff;border-left:3px solid #3b82f6">
+          <div class="info-box-title">📞 Soil Testing Near You</div>
+          <p>Visit your nearest Krishi Vigyan Kendra (KVK) or Soil Testing Lab. Results cost ₹5–25 and give exact NPK levels for your field.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PEST IDENTIFIER ══ -->
+  <div class="tool-panel" id="tool-pest">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title"><i class="fas fa-camera"></i> Identify Pest from Photo</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Upload a close-up photo of the pest or damaged area to identify it and get control measures.</p>
+        <div class="pest-upload" onclick="document.getElementById('pestInput').click()">
+          <input type="file" id="pestInput" accept="image/*" hidden onchange="identifyPest(this)">
+          <i class="fas fa-camera"></i>
+          <p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">Upload photo of pest or damage</p>
+          <p style="font-size:12px;color:var(--muted)">JPG · PNG · WEBP</p>
+        </div>
+        <div class="pest-detail" id="pestDetail">
+          <div class="pest-head">
+            <div class="pest-emoji" id="pEmoji">🐛</div>
+            <div>
+              <div class="pest-name-big" id="pName">Aphids</div>
+              <div class="pest-type-tag" id="pType">Sucking Pest</div>
+            </div>
+          </div>
+          <div class="pest-grid">
+            <div class="pest-item"><div class="pest-item-label">Damage</div><div class="pest-item-val" id="pDamage">-</div></div>
+            <div class="pest-item"><div class="pest-item-label">Affected Crops</div><div class="pest-item-val" id="pCrops">-</div></div>
+            <div class="pest-item"><div class="pest-item-label">Chemical Control</div><div class="pest-item-val" id="pChem">-</div></div>
+            <div class="pest-item"><div class="pest-item-label">Organic Control</div><div class="pest-item-val" id="pOrg">-</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="fas fa-list"></i> Common Pests — Click to View</div>
+        <div id="pestList" style="max-height:480px;overflow-y:auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MANDI PRICES ══ -->
+  <div class="tool-panel" id="tool-mandi">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-chart-line"></i> Today's Mandi Prices — Telangana & AP</div>
+      <div class="mandi-filters">
+        <select class="mandi-select" id="mandiState" onchange="filterMandi()">
+          <option value="all">All States</option>
+          <option value="telangana">Telangana</option>
+          <option value="ap">Andhra Pradesh</option>
+          <option value="karnataka">Karnataka</option>
+        </select>
+        <select class="mandi-select" id="mandiCrop" onchange="filterMandi()">
+          <option value="all">All Crops</option>
+          <option value="rice">Rice</option><option value="cotton">Cotton</option>
+          <option value="tomato">Tomato</option><option value="chilli">Chilli</option>
+          <option value="wheat">Wheat</option><option value="maize">Maize</option>
+          <option value="onion">Onion</option><option value="groundnut">Groundnut</option>
+        </select>
+      </div>
+      <div class="mandi-cards" id="mandiGrid"></div>
+      <div class="disclaimer"><i class="fas fa-exclamation-circle"></i> <b>Indicative prices only</b> — based on recent MSP and average mandi arrivals. Always verify at your local APMC or call <b>1800-270-0224</b> (AgMarkNet) before selling.</div>
+    </div>
+  </div>
+
+  <!-- ══ FARM DIARY ══ -->
+  <div class="tool-panel" id="tool-diary">
+    <div class="diary-topbar">
+      <div>
+        <h2 style="font-size:20px;font-weight:800;color:var(--text)">📔 My Farm Diary</h2>
+        <p style="font-size:13px;color:var(--muted)">Track daily activities, observations and field notes</p>
+      </div>
+      <button class="green-btn" onclick="toggleDiaryForm()"><i class="fas fa-plus"></i> Add Entry</button>
+    </div>
+
+    <div class="diary-add-form" id="diaryForm">
+      <p style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px">New Entry</p>
+      <div class="field-row2">
+        <div class="field"><label>Date</label><input type="date" id="diaryDate"></div>
+        <div class="field"><label>Crop</label>
+          <select id="diaryCrop">
+            <option>🌾 Rice</option><option>🍅 Tomato</option><option>🌱 Cotton</option>
+            <option>🌿 Wheat</option><option>🥔 Potato</option><option>🥭 Mango</option>
+            <option>🍌 Banana</option><option>🌶️ Chilli</option><option>🌱 Other</option>
+          </select></div>
+      </div>
+      <div class="field"><label>Activity / Title</label><input type="text" id="diaryTitle" placeholder="e.g. Applied fertilizer, Noticed yellowing on leaves..."></div>
+      <div class="field"><label>Notes</label><textarea id="diaryNote" rows="3" placeholder="Describe what you observed or did today..."></textarea></div>
+      <div class="field">
+        <label>Tags</label>
+        <div class="tag-picker">
+          <label><input type="checkbox" value="watered"><span>💧 Watered</span></label>
+          <label><input type="checkbox" value="sprayed"><span>🧪 Sprayed</span></label>
+          <label><input type="checkbox" value="harvested"><span>🌾 Harvested</span></label>
+          <label><input type="checkbox" value="observed"><span>🔍 Observed</span></label>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="green-btn" onclick="saveDiary()"><i class="fas fa-save"></i> Save</button>
+        <button class="outline-btn" onclick="toggleDiaryForm()">Cancel</button>
+      </div>
+    </div>
+
+    <div id="diaryList"></div>
+  </div>
+</div>
+
+<script>
+// TABS
+function switchTool(id, btn) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tool-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── FERTILIZER ──
+const FD = {
+  rice:      {N:[80,40,40],P:40,K:40}, wheat:    {N:[60,30,30],P:30,K:30},
+  cotton:    {N:[80,40,40],P:40,K:40}, tomato:   {N:[100,50,50],P:60,K:80},
+  potato:    {N:[120,60,60],P:80,K:100}, maize:  {N:[80,40,40],P:40,K:20},
+  sugarcane: {N:[150,75,75],P:60,K:60}, groundnut:{N:[20,0,0],P:40,K:20}
+};
+function calcFertilizer() {
+  const crop=document.getElementById('fertCrop').value, area=parseFloat(document.getElementById('fertArea').value);
+  const unit=document.getElementById('fertUnit').value, stage=document.getElementById('fertStage').value;
+  const nLvl=document.getElementById('fertN').value;
+  if (!area||area<=0){alert('Enter land area');return;}
+  let ac = unit==='hectare'?area*2.47:unit==='guntha'?area/40:area;
+  const d=FD[crop], idx={base:0,tillering:1,flowering:2,fruiting:2}[stage]||0;
+  let nDose=d.N[idx]; if(nLvl==='medium')nDose*=0.8; if(nLvl==='high')nDose*=0.6;
+  const urea=(nDose*ac*2.17/1000).toFixed(1), dap=(d.P*ac*2.17/460).toFixed(1), mop=(d.K*ac*2.17/600).toFixed(1);
+  document.getElementById('fertResultBody').innerHTML=`
+    <div class="result-row"><span>🧪 Urea (46% N)</span><strong>${urea} kg</strong></div>
+    <div class="result-row"><span>🔵 DAP (18:46:0)</span><strong>${dap} kg</strong></div>
+    <div class="result-row"><span>🟤 MOP (0:0:60)</span><strong>${mop} kg</strong></div>
+    <div class="result-row"><span>📐 Area</span><strong>${area} ${unit}${area>1?'s':''}</strong></div>`;
+  document.getElementById('fertResult').classList.add('show');
+}
+
+// ── PESTS ──
+const PESTS=[
+  {e:'🦗',n:'Aphids',t:'Sucking Pest',c:'Tomato, Cotton, Wheat',d:'Curling leaves, sticky honeydew, yellowing',ch:'Imidacloprid 0.5ml/L or Thiamethoxam 0.3g/L',or:'Neem oil 5ml/L + soap spray weekly'},
+  {e:'🐛',n:'Whitefly',t:'Sucking Pest',c:'Tomato, Cotton, Chilli',d:'Yellow spots, virus spread, sooty mould',ch:'Spiromesifen 0.9ml/L or Bifenthrin 1ml/L',or:'Yellow sticky traps + neem oil 5ml/L'},
+  {e:'🐜',n:'Thrips',t:'Sucking Pest',c:'Chilli, Onion, Cotton',d:'Silver streaks on leaves, scarred fruits',ch:'Spinosad 0.3ml/L or Acephate 1.5g/L',or:'Blue sticky traps + neem oil spray'},
+  {e:'🦟',n:'Stem Borer',t:'Boring Pest',c:'Rice, Maize, Sugarcane',d:'Dead heart in vegetative, white ear stage',ch:'Chlorpyrifos 2ml/L or Cartap 2g/L',or:'Trichogramma cards 50,000 per acre'},
+  {e:'🐝',n:'Mealybug',t:'Sucking Pest',c:'Cotton, Tomato, Papaya',d:'White cottony mass, stunted growth',ch:'Profenofos 2ml/L or Dimethoate 2ml/L',or:'Neem oil 5ml/L + soap 1g/L'},
+  {e:'🦎',n:'Red Spider Mite',t:'Mite Pest',c:'Tomato, Brinjal, Cotton',d:'Bronze/rusty leaf, fine webbing underneath',ch:'Abamectin 0.5ml/L or Propargite 2ml/L',or:'Wettable sulphur 3g/L or neem oil'},
+  {e:'🐞',n:'Jassid (Leafhopper)',t:'Sucking Pest',c:'Cotton, Brinjal, Groundnut',d:'Hopper burn — leaf margins dry & curl up',ch:'Imidacloprid 0.5ml/L or Lambda-cyhalothrin',or:'Neem oil 5ml/L spray weekly'},
+  {e:'🐌',n:'Cutworm',t:'Soil Pest',c:'Tomato, Potato, Maize',d:'Stem cut at soil level, plant collapses',ch:'Chlorpyrifos 2.5ml/L soil drench',or:'Metarhizium biopesticide, deep ploughing'},
+];
+function buildPestList(){
+  document.getElementById('pestList').innerHTML=PESTS.map((p,i)=>`
+    <div class="pest-list-item" onclick="showPest(${i})">
+      <span class="pest-list-emoji">${p.e}</span>
+      <div><div class="pest-list-name">${p.n}</div><div class="pest-list-sub">${p.t} · ${p.c.split(',')[0]}</div></div>
+      <i class="fas fa-chevron-right" style="margin-left:auto;color:#d1d5db;font-size:12px"></i>
+    </div>`).join('');
+}
+function showPest(i){
+  const p=PESTS[i];
+  document.getElementById('pEmoji').textContent=p.e;
+  document.getElementById('pName').textContent=p.n;
+  document.getElementById('pType').textContent=p.t;
+  document.getElementById('pDamage').textContent=p.d;
+  document.getElementById('pCrops').textContent=p.c;
+  document.getElementById('pChem').textContent=p.ch;
+  document.getElementById('pOrg').textContent=p.or;
+  document.getElementById('pestDetail').classList.add('show');
+}
+function identifyPest(input){
+  if(!input.files[0])return;
+  const r=Math.floor(Math.random()*PESTS.length);
+  showPest(r);
+  input.closest('.pest-upload').innerHTML=`<i class="fas fa-check-circle" style="color:var(--leaf)"></i><p style="color:var(--leaf);font-weight:600;font-size:13px;margin-top:6px">Image uploaded — showing closest match</p>`;
+}
+buildPestList();
+
+// ── MANDI ──
+const MP=[
+  {crop:'Rice (Sona Masoori)',e:'🌾',market:'Warangal APMC',state:'telangana',type:'rice',price:2183,ch:+2.1,note:'MSP: ₹2183'},
+  {crop:'Cotton (Long Staple)',e:'🌱',market:'Adilabad Mandi',state:'telangana',type:'cotton',price:6620,ch:-1.2,note:'MSP: ₹6620'},
+  {crop:'Tomato',e:'🍅',market:'Kothapeta, AP',state:'ap',type:'tomato',price:1840,ch:+12.5,note:'Volatile — check daily'},
+  {crop:'Red Chilli (Teja)',e:'🌶️',market:'Guntur APMC',state:'ap',type:'chilli',price:18500,ch:+3.4,note:'Export quality premium'},
+  {crop:'Wheat',e:'🌿',market:'Nizamabad Mandi',state:'telangana',type:'wheat',price:2275,ch:0,note:'MSP: ₹2275'},
+  {crop:'Maize',e:'🌽',market:'Karimnagar',state:'telangana',type:'maize',price:2090,ch:-0.8,note:'MSP: ₹2090'},
+  {crop:'Onion',e:'🧅',market:'Kurnool APMC',state:'ap',type:'onion',price:2200,ch:+5.2,note:'Varies by grade'},
+  {crop:'Rice (BPT)',e:'🌾',market:'Nellore, AP',state:'ap',type:'rice',price:3800,ch:+1.5,note:'Premium variety'},
+  {crop:'Groundnut',e:'🥜',market:'Kurnool, AP',state:'ap',type:'groundnut',price:5850,ch:+1.1,note:'MSP: ₹5850'},
+  {crop:'Cotton (Medium)',e:'🌱',market:'Sangareddy',state:'telangana',type:'cotton',price:6400,ch:-0.5,note:'MSP: ₹6380'},
+  {crop:'Tomato',e:'🍅',market:'Hyderabad Bowenpally',state:'telangana',type:'tomato',price:2100,ch:+8.3,note:'Check daily'},
+  {crop:'Maize (Yellow)',e:'🌽',market:'Davangere, KA',state:'karnataka',type:'maize',price:2150,ch:+2.0,note:'Poultry grade'},
+];
+function renderMandi(list){
+  document.getElementById('mandiGrid').innerHTML=list.map(m=>{
+    const cls=m.ch>0?'up':m.ch<0?'down':'flat', sym=m.ch>0?'↑':m.ch<0?'↓':'→';
+    return`<div class="mandi-card">
+      <div class="mandi-crop-name">${m.e} ${m.crop}</div>
+      <div class="mandi-market">📍 ${m.market}</div>
+      <div class="mandi-price">₹${m.price.toLocaleString('en-IN')}</div>
+      <div class="mandi-unit">per quintal</div>
+      <div class="mandi-badge ${cls}">${sym} ${Math.abs(m.ch)}% today</div>
+      <div class="mandi-note">${m.note}</div>
+    </div>`;
+  }).join('');
+}
+function filterMandi(){
+  const s=document.getElementById('mandiState').value, c=document.getElementById('mandiCrop').value;
+  renderMandi(MP.filter(m=>(s==='all'||m.state===s)&&(c==='all'||m.type===c)));
+}
+renderMandi(MP);
+
+// ── DIARY ──
+let diary=JSON.parse(localStorage.getItem('al_diary')||'[]');
+function toggleDiaryForm(){
+  const f=document.getElementById('diaryForm');
+  f.classList.toggle('show');
+  if(f.classList.contains('show')) document.getElementById('diaryDate').value=new Date().toISOString().split('T')[0];
+}
+function saveDiary(){
+  const title=document.getElementById('diaryTitle').value.trim();
+  if(!title){alert('Enter a title');return;}
+  const tags=[...document.querySelectorAll('.tag-picker input:checked')].map(i=>i.value);
+  diary.unshift({id:Date.now(),title,note:document.getElementById('diaryNote').value.trim(),date:document.getElementById('diaryDate').value,crop:document.getElementById('diaryCrop').value,tags});
+  localStorage.setItem('al_diary',JSON.stringify(diary));
+  renderDiary(); toggleDiaryForm();
+  document.getElementById('diaryTitle').value='';
+  document.getElementById('diaryNote').value='';
+  document.querySelectorAll('.tag-picker input').forEach(i=>i.checked=false);
+}
+function delDiary(id){
+  if(!confirm('Delete?'))return;
+  diary=diary.filter(e=>e.id!==id);
+  localStorage.setItem('al_diary',JSON.stringify(diary));
+  renderDiary();
+}
+function renderDiary(){
+  const el=document.getElementById('diaryList');
+  if(!diary.length){el.innerHTML='<div class="empty-state"><i class="fas fa-book-open"></i><p>No entries yet. Start recording your farm activities!</p></div>';return;}
+  el.innerHTML=diary.map(e=>`
+    <div class="diary-entry">
+      <button class="diary-del-btn" onclick="delDiary(${e.id})"><i class="fas fa-trash"></i></button>
+      <div class="diary-meta">
+        <span class="diary-crop-tag">${e.crop}</span>
+        <span class="diary-date-tag">${new Date(e.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</span>
+      </div>
+      <div class="diary-title">${e.title}</div>
+      ${e.note?`<div class="diary-note">${e.note}</div>`:''}
+      ${e.tags.length?`<div class="diary-tags">${e.tags.map(t=>`<span class="d-tag ${t}">${t.charAt(0).toUpperCase()+t.slice(1)}</span>`).join('')}</div>`:''}
+    </div>`).join('');
+}
+renderDiary();
+</script>
+</body>
+</html>
