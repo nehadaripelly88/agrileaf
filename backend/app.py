@@ -154,13 +154,9 @@ def predict_disease(image_bytes, selected_crop='auto'):
         img = Image.open(io.BytesIO(image_bytes)).convert('RGB').resize((224, 224))
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-        if callable(model) and hasattr(model, 'structured_input_signature'):
-            predictions = model([img_array]).numpy()
-        elif callable(model):
-            import tensorflow as tf
-            predictions = model(tf.constant(img_array)).numpy()
-        else:
-            predictions = model.predict(img_array, verbose=0)
+        import tensorflow as tf
+        img_tensor = tf.cast(tf.constant(img_array), tf.float32)
+        predictions = model([img_tensor]).numpy()
         top_idx = np.argmax(predictions[0])
         confidence = float(predictions[0][top_idx])
         predicted_class = class_names.get(str(top_idx), "Unknown")
