@@ -14,15 +14,6 @@ import base64
 
 app = Flask(__name__, template_folder=os.path.join(BASE_DIR, '..', 'frontend', 'templates'), static_folder=os.path.join(BASE_DIR, '..', 'frontend', 'static'))
 app.secret_key = 'agrileaf_secret_key_2024_production_fixed'
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_FILE_DIR'] = '/tmp/flask_sessions'
-app.config['SESSION_PERMANENT'] = True
-app.config['PERMANENT_SESSION_LIFETIME'] = 86400 * 7
-Session(app)
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['SESSION_COOKIE_SECURE'] = False
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['PERMANENT_SESSION_LIFETIME'] = 86400 * 7
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///agrileaf.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MODEL_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'agrileaf_model.h5')
@@ -30,6 +21,14 @@ app.config['CLASS_NAMES_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'class_na
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 db = SQLAlchemy(app)
+app.config['SESSION_TYPE'] = 'sqlalchemy'
+app.config['SESSION_SQLALCHEMY'] = db
+app.config['SESSION_PERMANENT'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400 * 7
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+Session(app)
 
 # ── MODELS ────────────────────────────────────────────────────
 class User(db.Model):
