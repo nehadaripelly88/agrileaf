@@ -47,7 +47,29 @@
         .soil-summary{font-size:13px;color:#374151;margin-bottom:10px}
         .soil-warning-item{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;font-size:12px;color:#dc2626;margin-bottom:6px}
         .soil-advice-item{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;font-size:12px;color:#166534;margin-bottom:6px}
-    </style>
+    
+        @media (max-width: 768px) {
+            .sidebar { 
+                position: relative !important; 
+                height: auto !important;
+                width: 100% !important;
+                overflow: visible !important;
+            }
+            .main-layout {
+                flex-direction: column !important;
+                overflow: auto !important;
+            }
+            .main-content {
+                height: auto !important;
+                overflow: visible !important;
+                padding-bottom: 80px;
+            }
+            body, html {
+                overflow-x: hidden;
+                overflow-y: auto !important;
+            }
+        }
+</style>
 </head>
 <body>
 
@@ -162,11 +184,15 @@
 
             <div class="dropzone" id="dropzone">
                 <input type="file" id="fileInput" accept="image/*" hidden>
+                <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
                 <div class="dz-idle" id="dzIdle">
                     <div class="dz-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <p class="dz-title">Drop your leaf image here</p>
                     <p class="dz-sub">JPG · PNG · WEBP · Max 16MB</p>
-                    <button class="btn-outline" onclick="document.getElementById('fileInput').click()">Choose File</button>
+                    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
+                        <button class="btn-outline" onclick="document.getElementById('fileInput').click()"><i class="fas fa-image"></i> Gallery</button>
+                        <button class="btn-outline" onclick="document.getElementById('cameraInput').click()" style="background:#1a3d2b;color:#fff;border-color:#1a3d2b"><i class="fas fa-camera"></i> Camera</button>
+                    </div>
                 </div>
                 <div class="dz-preview" id="dzPreview" style="display:none">
                     <img id="previewImg" src="" alt="Preview">
@@ -236,28 +262,6 @@
                     <p class="ai-pred-model" id="modelUsed"></p>
                 </div>
 
-                <!-- FOLLOW-UP QUESTIONS -->
-                <div class="info-card" id="followupCard" style="display:none;border:2px solid #2d6a4f;background:#f0fdf4">
-                    <h4 style="color:#1a3d2b"><i class="fas fa-question-circle"></i> Confirm Your Diagnosis</h4>
-                    <p style="font-size:13px;color:#374151;margin-bottom:16px">Answer these quick questions to verify the AI result and adjust severity accurately.</p>
-                    <div id="followupQuestions"></div>
-                    <button onclick="submitFollowup()" style="background:#1a3d2b;color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:12px;font-family:inherit"><i class="fas fa-check"></i> Confirm Diagnosis</button>
-                </div>
-                <div class="info-card" id="confirmResult" style="display:none">
-                    <div id="confirmMessage" style="font-size:14px;font-weight:600;padding:12px;border-radius:8px"></div>
-                </div>
-
-                <!-- FOLLOW-UP QUESTIONS -->
-                <div class="info-card" id="followupCard" style="display:none;border:2px solid #2d6a4f;background:#f0fdf4">
-                    <h4 style="color:#1a3d2b"><i class="fas fa-question-circle"></i> Confirm Your Diagnosis</h4>
-                    <p style="font-size:13px;color:#374151;margin-bottom:16px">Answer these quick questions to verify the AI result and adjust severity accurately.</p>
-                    <div id="followupQuestions"></div>
-                    <button onclick="submitFollowup()" style="background:#1a3d2b;color:#fff;border:none;padding:11px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:12px;font-family:inherit"><i class="fas fa-check"></i> Confirm Diagnosis</button>
-                </div>
-                <div class="info-card" id="confirmResult" style="display:none">
-                    <div id="confirmMessage" style="font-size:14px;font-weight:600;padding:12px;border-radius:8px"></div>
-                </div>
-
                 <div class="severity-block">
                     <div class="severity-labels-row">
                         <span>Severity Assessment</span>
@@ -301,7 +305,6 @@
 
                 <div class="result-actions">
                     <button class="btn-outline" onclick="downloadReport()"><i class="fas fa-download"></i> Download Report</button>
-                    <button style="background:#25d366;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:inherit;margin-left:8px" onclick="shareWhatsApp()"><i class="fab fa-whatsapp"></i> Share on WhatsApp</button>
                     <button class="btn-primary-sm" onclick="resetAnalyzer()"><i class="fas fa-redo"></i> New Analysis</button>
                 </div>
             </div>
@@ -391,5 +394,19 @@
     </div>
 </footer>
 
-<script src="/static/js/main.js?v=2026031801"></script>
+<script src="/static/js/main.js"></script>
+<script>
+document.getElementById('cameraInput').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (file) {
+        document.getElementById('fileInput').files = e.target.files;
+        var event = new Event('change', { bubbles: true });
+        var dt = new DataTransfer();
+        dt.items.add(file);
+        document.getElementById('fileInput').files = dt.files;
+        document.getElementById('fileInput').dispatchEvent(event);
+    }
+});
+</script>
 </body>
+</html>
