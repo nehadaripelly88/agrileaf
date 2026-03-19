@@ -134,8 +134,9 @@ def load_model():
         names_path = app.config['CLASS_NAMES_PATH']
         if os.path.exists(model_path) and os.path.exists(names_path):
             if os.path.isdir(model_path):
-                model = tf.saved_model.load(model_path)
-                model = model.serve
+                _loaded = tf.saved_model.load(model_path)
+                globals()['_loaded_model_ref'] = _loaded
+                model = _loaded.serve
             else:
                 model = tf.keras.models.load_model(model_path)
             with open(names_path, 'r') as f:
