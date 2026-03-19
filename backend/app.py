@@ -255,7 +255,10 @@ def dashboard():
         return redirect(url_for('login'))
     user = User.query.get(session['user_id'])
     analyses = Analysis.query.filter_by(user_id=session['user_id']).order_by(Analysis.timestamp.desc()).limit(20).all()
-    return render_template('dashboard.html', user=user, analyses=analyses)
+    total = len(analyses)
+    healthy = sum(1 for a in analyses if 'healthy' in a.disease.lower())
+    stats = {'total': total, 'healthy': healthy, 'diseased': total - healthy}
+    return render_template('dashboard.html', user=user, analyses=analyses, stats=stats)
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
