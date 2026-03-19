@@ -18,7 +18,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 app.secret_key = 'agrileaf_secret_key_2024_production_fixed'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'agrileaf.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['MODEL_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'agrileaf_model.h5')
+app.config['MODEL_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'agrileaf_export')
 app.config['CLASS_NAMES_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'class_names.json')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
@@ -133,7 +133,11 @@ def load_model():
         model_path = app.config['MODEL_PATH']
         names_path = app.config['CLASS_NAMES_PATH']
         if os.path.exists(model_path) and os.path.exists(names_path):
-            model = tf.keras.models.load_model(model_path)
+            if os.path.isdir(model_path):
+                model = tf.saved_model.load(model_path)
+                model = model.serve
+            else:
+                model = tf.keras.models.load_model(model_path)
             with open(names_path, 'r') as f:
                 class_names = json.load(f)
             print(f"[AI] Model loaded — {len(class_names)} classes")
@@ -150,7 +154,7 @@ def predict_disease(image_bytes, selected_crop='auto'):
         img = Image.open(io.BytesIO(image_bytes)).convert('RGB').resize((224, 224))
         img_array = np.array(img) / 255.0
         img_array = np.expand_dims(img_array, axis=0)
-        predictions = model.predict(img_array, verbose=0)
+        predictions = model(img_array).numpy() if callable(model) else model.predict(img_array, verbose=0)
         top_idx = np.argmax(predictions[0])
         confidence = float(predictions[0][top_idx])
         predicted_class = class_names.get(str(top_idx), "Unknown")
