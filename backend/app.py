@@ -18,6 +18,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 app.secret_key = 'agrileaf_secret_key_2024_production_fixed'
 import os as _os
 _db_url = _os.environ.get('DATABASE_URL', 'sqlite:///' + os.path.join(BASE_DIR, 'agrileaf.db'))
+print(f'[DB] Using database: {_db_url[:30]}...')
 app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MODEL_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'agrileaf_export')
