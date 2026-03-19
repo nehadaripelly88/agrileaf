@@ -12,7 +12,11 @@ import io
 import base64
 
 app = Flask(__name__, template_folder=os.path.join(BASE_DIR, '..', 'frontend', 'templates'), static_folder=os.path.join(BASE_DIR, '..', 'frontend', 'static'))
-app.secret_key = 'agrileaf_secret_key_2024'
+app.secret_key = 'agrileaf_secret_key_2024_production_fixed'
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = False
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400 * 7
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///agrileaf.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MODEL_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'agrileaf_model.h5')
