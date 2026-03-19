@@ -383,6 +383,33 @@
 </footer>
 
 <script src="/static/js/main.js"></script>
+
+<!-- Mobile Bottom Navigation -->
+<div id="mobileNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid #e5e7eb;z-index:9999;padding:6px 0;box-shadow:0 -2px 12px rgba(0,0,0,.08)">
+    <div style="display:flex;justify-content:space-around;align-items:center">
+        <a href="#analyzer" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#1a3d2b;font-size:10px;font-weight:600;padding:4px 8px">
+            <i class="fas fa-microscope" style="font-size:18px"></i>Analyze
+        </a>
+        <a href="#history" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#6b7280;font-size:10px;font-weight:600;padding:4px 8px">
+            <i class="fas fa-history" style="font-size:18px"></i>History
+        </a>
+        <a href="/tools" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#6b7280;font-size:10px;font-weight:600;padding:4px 8px">
+            <i class="fas fa-tools" style="font-size:18px"></i>Farm Tools
+        </a>
+        <a href="/advanced" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#6b7280;font-size:10px;font-weight:600;padding:4px 8px">
+            <i class="fas fa-robot" style="font-size:18px"></i>AI Features
+        </a>
+        <a href="/dashboard" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#6b7280;font-size:10px;font-weight:600;padding:4px 8px">
+            <i class="fas fa-chart-bar" style="font-size:18px"></i>Dashboard
+        </a>
+    </div>
+</div>
+<style>
+@media (max-width: 768px) {
+    #mobileNav { display:block !important; }
+    body { padding-bottom: 70px; }
+}
+</style>
 <script>
 document.getElementById('cameraInput').addEventListener('change', function(e) {
     var file = e.target.files[0];
