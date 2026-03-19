@@ -3,6 +3,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 import json
 import numpy as np
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
+from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -13,6 +14,11 @@ import base64
 
 app = Flask(__name__, template_folder=os.path.join(BASE_DIR, '..', 'frontend', 'templates'), static_folder=os.path.join(BASE_DIR, '..', 'frontend', 'static'))
 app.secret_key = 'agrileaf_secret_key_2024_production_fixed'
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_FILE_DIR'] = '/tmp/flask_sessions'
+app.config['SESSION_PERMANENT'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400 * 7
+Session(app)
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['SESSION_COOKIE_HTTPONLY'] = True
