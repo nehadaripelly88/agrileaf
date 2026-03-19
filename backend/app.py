@@ -18,7 +18,7 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 app.secret_key = 'agrileaf_secret_key_2024_production_fixed'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'agrileaf.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['MODEL_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'agrileaf_model.keras')
+app.config['MODEL_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'agrileaf_model.h5')
 app.config['CLASS_NAMES_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'class_names.json')
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
