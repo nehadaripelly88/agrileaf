@@ -214,7 +214,12 @@ def register():
         else:
             username = request.form.get('username', '')
             password = request.form.get('password', '')
-        if User.query.filter_by(username=username).first():
+        try:
+            existing = User.query.filter_by(username=username).first()
+        except Exception:
+            db.session.rollback()
+            existing = User.query.filter_by(username=username).first()
+        if existing:
             if request.is_json:
                 return jsonify({'success': False, 'message': 'Username already exists'})
             return render_template('register.html', error='Username already exists')
@@ -239,7 +244,11 @@ def login():
         else:
             username = request.form.get('username', '')
             password = request.form.get('password', '')
-        user = User.query.filter_by(username=username).first()
+        try:
+            user = User.query.filter_by(username=username).first()
+        except Exception:
+            db.session.rollback()
+            user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password_hash, password):
             session.permanent = True
             session['user_id'] = int(user.id)
