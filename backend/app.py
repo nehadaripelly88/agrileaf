@@ -373,8 +373,6 @@ def confirm_diagnosis():
     return jsonify({'success': True, 'confirmed': confirmed, 'confirmation_ratio': round(ratio, 2), 'adjusted_severity': adjusted_severity, 'confidence_boost': round((ratio - 0.5) * 20, 1), 'message': message})
 
 with app.app_context():
-    # Drop and recreate all tables to fix schema issues
-    db.drop_all()
     db.create_all()
     # Create demo account
     from werkzeug.security import generate_password_hash as gph
