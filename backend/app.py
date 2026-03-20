@@ -23,10 +23,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
-    'pool_recycle': 300,
-    'pool_size': 5,
-    'max_overflow': 2,
-    'connect_args': {'connect_timeout': 10, 'sslmode': 'require'}
+    'pool_recycle': 280,
+    'pool_timeout': 20,
+    'pool_size': 3,
+    'max_overflow': 1
 }
 app.config['MODEL_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'agrileaf_export')
 app.config['CLASS_NAMES_PATH'] = os.path.join(BASE_DIR, '..', 'model', 'class_names.json')
