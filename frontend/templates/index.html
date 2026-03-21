@@ -48,17 +48,46 @@
         .soil-warning-item{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 12px;font-size:12px;color:#dc2626;margin-bottom:6px}
         .soil-advice-item{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;font-size:12px;color:#166534;margin-bottom:6px}
     
+        /* ── MOBILE FIXES ── */
+        html, body {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            touch-action: pan-y;
+            height: auto !important;
+            min-height: 100% !important;
+        }
         @media (max-width: 768px) {
-            body { overflow-y: auto !important; }
-            .main-layout { flex-direction: column !important; height: auto !important; }
-            .sidebar { width: 100% !important; height: auto !important; min-height: unset !important; flex-direction: row !important; flex-wrap: wrap !important; padding: 8px !important; gap: 4px !important; }
-            .nav-item { padding: 8px 12px !important; font-size: 12px !important; }
-            .main-content { height: auto !important; overflow: visible !important; padding: 12px !important; }
-            .content-area { height: auto !important; overflow: visible !important; }
+            body { padding-bottom: 72px !important; }
+            .nav { position: sticky !important; top: 0; z-index: 100; }
+            .nav-inner { flex-wrap: wrap !important; height: auto !important; padding: 10px 14px !important; gap: 6px !important; min-height: 56px; }
+            .nav-links { display: none !important; }
+            .model-badge { font-size: 11px !important; padding: 4px 8px !important; }
+            .nav-username { font-size: 11px !important; padding: 4px 9px !important; }
+            .nav-btn { font-size: 11px !important; padding: 5px 10px !important; }
+            .hero { padding: 24px 16px 36px !important; display: block !important; }
+            .hero h1 { font-size: 26px !important; letter-spacing: -1px; }
+            .hero-sub { font-size: 13px !important; }
+            .hero-stats { gap: 14px !important; flex-wrap: wrap !important; }
+            .hero-graphic { display: none !important; }
+            .section { padding: 36px 14px !important; }
+            .analyzer-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+            .panel { padding: 16px !important; }
+            .soil-row { grid-template-columns: 1fr !important; }
+            .pred-name { width: 110px !important; font-size: 11px !important; }
+            .result-actions { flex-direction: column !important; gap: 10px !important; }
+            .result-actions button, .result-actions a { width: 100% !important; justify-content: center !important; }
+            .modules-grid { grid-template-columns: 1fr !important; }
+            .module-arrow { display: none !important; }
+            .pipeline-steps { flex-direction: column !important; align-items: center !important; }
+            .ps-arrow { transform: rotate(90deg) !important; }
+            .history-cards { grid-template-columns: 1fr !important; }
+            .hero-cta { display: inline-flex !important; }
+            .tab-row { flex-wrap: wrap !important; }
         }
 </style>
 </head>
-<body>
+<body style="touch-action:pan-y;-webkit-overflow-scrolling:touch;">
 
 <nav class="nav">
     <div class="nav-inner">
@@ -171,15 +200,11 @@
 
             <div class="dropzone" id="dropzone">
                 <input type="file" id="fileInput" accept="image/*" hidden>
-                <input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
                 <div class="dz-idle" id="dzIdle">
                     <div class="dz-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <p class="dz-title">Drop your leaf image here</p>
                     <p class="dz-sub">JPG · PNG · WEBP · Max 16MB</p>
-                    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px">
-                        <button class="btn-outline" onclick="document.getElementById('fileInput').click()"><i class="fas fa-image"></i> Gallery</button>
-                        <button class="btn-outline" onclick="document.getElementById('cameraInput').click()" style="background:#1a3d2b;color:#fff;border-color:#1a3d2b"><i class="fas fa-camera"></i> Camera</button>
-                    </div>
+                    <button class="btn-outline" onclick="document.getElementById('fileInput').click()">Choose File</button>
                 </div>
                 <div class="dz-preview" id="dzPreview" style="display:none">
                     <img id="previewImg" src="" alt="Preview">
@@ -292,7 +317,6 @@
 
                 <div class="result-actions">
                     <button class="btn-outline" onclick="downloadReport()"><i class="fas fa-download"></i> Download Report</button>
-                    <button onclick="shareWhatsApp()" style="background:#25d366;color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:7px;font-family:inherit"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                     <button class="btn-primary-sm" onclick="resetAnalyzer()"><i class="fas fa-redo"></i> New Analysis</button>
                 </div>
             </div>
@@ -383,45 +407,5 @@
 </footer>
 
 <script src="/static/js/main.js"></script>
-
-<!-- Mobile Bottom Navigation -->
-<div id="mobileNav" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1.5px solid #e5e7eb;z-index:9999;padding:6px 0;box-shadow:0 -2px 12px rgba(0,0,0,.08)">
-    <div style="display:flex;justify-content:space-around;align-items:center">
-        <a href="#analyzer" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#1a3d2b;font-size:10px;font-weight:600;padding:4px 8px">
-            <i class="fas fa-microscope" style="font-size:18px"></i>Analyze
-        </a>
-        <a href="#history" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#6b7280;font-size:10px;font-weight:600;padding:4px 8px">
-            <i class="fas fa-history" style="font-size:18px"></i>History
-        </a>
-        <a href="/tools" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#6b7280;font-size:10px;font-weight:600;padding:4px 8px">
-            <i class="fas fa-tools" style="font-size:18px"></i>Farm Tools
-        </a>
-        <a href="/advanced" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#6b7280;font-size:10px;font-weight:600;padding:4px 8px">
-            <i class="fas fa-robot" style="font-size:18px"></i>AI Features
-        </a>
-        <a href="/dashboard" style="display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#6b7280;font-size:10px;font-weight:600;padding:4px 8px">
-            <i class="fas fa-chart-bar" style="font-size:18px"></i>Dashboard
-        </a>
-    </div>
-</div>
-<style>
-@media (max-width: 768px) {
-    #mobileNav { display:block !important; }
-    body { padding-bottom: 70px; }
-}
-</style>
-<script>
-document.getElementById('cameraInput').addEventListener('change', function(e) {
-    var file = e.target.files[0];
-    if (file) {
-        document.getElementById('fileInput').files = e.target.files;
-        var event = new Event('change', { bubbles: true });
-        var dt = new DataTransfer();
-        dt.items.add(file);
-        document.getElementById('fileInput').files = dt.files;
-        document.getElementById('fileInput').dispatchEvent(event);
-    }
-});
-</script>
 </body>
 </html>

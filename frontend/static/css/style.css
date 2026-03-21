@@ -463,3 +463,152 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--cream);color:
 .htr-crop{font-size:12px;color:var(--muted);margin-top:2px}
 .htr-conf{font-size:14px;font-weight:700;color:var(--green-dark)}
 .htr-date{font-size:12px;color:var(--muted);line-height:1.5}
+/* ── MOBILE SCROLL & LAYOUT FIX ── */
+/* Add this to END of style.css */
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+}
+
+.nav {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+@media (max-width: 768px) {
+    html, body {
+        height: auto !important;
+        min-height: 100vh;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
+    }
+
+    .nav {
+        position: sticky !important;
+        top: 0;
+    }
+
+    .nav-inner {
+        height: auto !important;
+        min-height: 56px;
+        flex-wrap: wrap;
+        padding: 8px 14px;
+        gap: 6px;
+    }
+
+    .nav-links {
+        display: none !important;
+    }
+
+    .nav-user {
+        gap: 6px;
+    }
+
+    .nav-username {
+        font-size: 11px !important;
+        padding: 4px 9px !important;
+    }
+
+    .nav-btn {
+        font-size: 11px !important;
+        padding: 5px 10px !important;
+    }
+
+    .model-badge {
+        font-size: 11px !important;
+        padding: 4px 8px !important;
+    }
+
+    .hero {
+        padding: 24px 16px 36px !important;
+        display: block !important;
+    }
+
+    .hero h1 {
+        font-size: 26px !important;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-graphic {
+        display: none !important;
+    }
+
+    .hero-stats {
+        gap: 14px !important;
+        flex-wrap: wrap !important;
+    }
+
+    .section {
+        padding: 36px 14px !important;
+    }
+
+    .analyzer-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .panel {
+        padding: 16px !important;
+    }
+
+    .soil-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .result-actions {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    .result-actions button,
+    .result-actions a {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .modules-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .module-arrow {
+        display: none !important;
+    }
+
+    .pipeline-steps {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .ps-arrow {
+        transform: rotate(90deg) !important;
+    }
+
+    .history-cards {
+        grid-template-columns: 1fr !important;
+    }
+
+    .pred-name {
+        width: 110px !important;
+        font-size: 11px !important;
+    }
+
+    .tab-row {
+        flex-wrap: wrap !important;
+    }
+
+    .result-header {
+        flex-wrap: wrap !important;
+    }
+
+    .confidence-chip {
+        margin-left: 0 !important;
+    }
+}
